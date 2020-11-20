@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ms_honda_sales/screens/cars/dashboard.dart';
 import 'package:ms_honda_sales/components/Button.dart';
 import 'package:ms_honda_sales/components/input_text_field.dart';
+import 'package:ms_honda_sales/services/sharedPrefs.dart';
 import 'package:ms_honda_sales/utilities/globalConstants.dart';
 import 'package:ms_honda_sales/utilities/styles/size_config.dart';
 import 'package:ms_honda_sales/utilities/constants/styles.dart';
@@ -21,8 +22,10 @@ class _LoginScreenState extends State<LoginScreen> {
   Future _submitform() async {
     if (_formKey.currentState.validate()) {
       try {
+        var sharedPref = SharedPref();
+        sharedPref.save('user', 123);
         Navigator.pop(context);
-        Navigator.pushReplacement(
+        Navigator.push(
             context, MaterialPageRoute(builder: (context) => CarsShowcase()));
       } catch (e) {
         print(e);
@@ -80,7 +83,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           Align(
                             alignment: Alignment.topLeft,
                             child: Text(
-                              "Welcome back",
+                              "Welcome!",
                               style: TextStyle(
                                   fontSize: 3 * SizeConfig.heightMultiplier,
                                   color: kBlackColor,
@@ -91,7 +94,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             height: 2.76 * SizeConfig.heightMultiplier,
                           ),
                           InputTextField(
-                            hintText: "Enter your mobile number",
+                            hintText: "Enter your user name",
                             choice: false,
                             onChanged: (value) {
                               setState(() {
@@ -100,10 +103,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             },
                             validator: (value) {
                               if (value.isEmpty) {
-                                return 'Please enter mobile number';
-                              }
-                              if (value.length != 10) {
-                                return 'Please enter a valid mobile number';
+                                return 'Please enter user name';
                               }
                               return null;
                             },
