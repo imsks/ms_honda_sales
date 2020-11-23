@@ -25,31 +25,31 @@ class AppTheme {
     fontWeight: FontWeight.w600,
     letterSpacing: 1.0,
   );
+
   static final TextStyle dashboardAppName = TextStyle(
     color: kBlackColor,
     fontSize: 3 * SizeConfig.textMultiplier,
     fontWeight: FontWeight.w600,
   );
-  static final Icon dashboardDrawerIcon = Icon(
-    Icons.menu,
-    color: kBlackColor,
-    size: 4.5 * SizeConfig.textMultiplier,
-  );
-  static final TextStyle dashboardPrimaryHeading = TextStyle(
-    fontSize: 2.5 * SizeConfig.textMultiplier,
+
+  static final TextStyle dashboardCarHeading = TextStyle(
+    fontSize: 3.5 * SizeConfig.textMultiplier,
     color: kBlackColor,
     fontWeight: FontWeight.w500,
   );
-  static final EdgeInsets dashboardActionCardPadding = EdgeInsets.only(
-      top: 2 * SizeConfig.heightMultiplier,
-      left: 4 * SizeConfig.heightMultiplier,
-      right: 4 * SizeConfig.heightMultiplier,
-      bottom: 0);
-  static final EdgeInsets exploreProductsPadding = EdgeInsets.only(
-      top: 2 * SizeConfig.heightMultiplier,
-      left: 3 * SizeConfig.heightMultiplier,
-      right: 3 * SizeConfig.heightMultiplier,
-      bottom: 0);
+
+  // Choose Car Model Screen
+  static final TextStyle chooseCarModelHeaderHeading = TextStyle(
+    fontSize: 3.5 * SizeConfig.textMultiplier,
+    color: kBlackColor,
+    fontWeight: FontWeight.w500,
+  );
+
+  static final TextStyle chooseCarModelHeaderSubheading = TextStyle(
+    fontSize: 1.5 * SizeConfig.textMultiplier,
+    color: kBlackColor,
+    fontWeight: FontWeight.w500,
+  );
 
   //  ActionCard Styling
   static final TextStyle actionCardTime = TextStyle(

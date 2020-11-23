@@ -2,16 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:ms_honda_sales/utilities/constants/styles.dart';
 import 'package:ms_honda_sales/utilities/globalConstants.dart';
 import 'package:ms_honda_sales/utilities/styles/size_config.dart';
+import 'package:ms_honda_sales/components/navbar.dart';
+import 'package:ms_honda_sales/screens/cars/choose_modal.dart';
 
 class CarsShowcase extends StatelessWidget {
   static const String id = 'carshowcase';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Center(child: const Text('MS Honda')),
-        backgroundColor: kBlackColor,
-      ),
+      appBar: globalAppBar,
       body: ShowcaseContainer(),
       backgroundColor: kBackgroundColor,
     );
@@ -27,7 +26,7 @@ class ShowcaseContainer extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.symmetric(
           horizontal: 3 * SizeConfig.heightMultiplier,
-          vertical: 3 * SizeConfig.heightMultiplier,
+          vertical: 1 * SizeConfig.heightMultiplier,
         ),
         child: Column(
           children: [
@@ -36,32 +35,6 @@ class ShowcaseContainer extends StatelessWidget {
               child: Text("View Car Models", style: AppTheme.dashboardAppName),
             ),
             CarList(),
-            Card(
-              child: InkWell(
-                splashColor: kCardBackgroundColor,
-                onTap: () {
-                  print('Card tapped.');
-                },
-                child: Container(
-                  width: 50 * SizeConfig.heightMultiplier,
-                  height: 20 * SizeConfig.heightMultiplier,
-                  child: Text('A card that can be tapped'),
-                ),
-              ),
-            ),
-            Card(
-              child: InkWell(
-                splashColor: kCardBackgroundColor,
-                onTap: () {
-                  print('Card tapped.');
-                },
-                child: Container(
-                  width: 50 * SizeConfig.heightMultiplier,
-                  height: 20 * SizeConfig.heightMultiplier,
-                  child: Text('A card that can be tapped'),
-                ),
-              ),
-            ),
           ],
         ),
       ),
@@ -70,32 +43,66 @@ class ShowcaseContainer extends StatelessWidget {
 }
 
 class CarList extends StatelessWidget {
-  final List<String> entries = <String>['A', 'B', 'C'];
-  final List<int> colorCodes = <int>[600, 500, 100];
+  final List<String> carNames = <String>[
+    'Amaze 1',
+    'Amaze 2',
+    'Amaze 3',
+    'Amaze 4'
+  ];
+  final List<String> carPhotos = <String>[
+    'https://imgd.aeplcdn.com/0x0/n/cw/ec/33276/amaze-exterior-right-front-three-quarter.jpeg',
+    'https://imgd.aeplcdn.com/0x0/n/cw/ec/33276/amaze-exterior-right-front-three-quarter.jpeg',
+    'https://imgd.aeplcdn.com/0x0/n/cw/ec/33276/amaze-exterior-right-front-three-quarter.jpeg',
+    'https://imgd.aeplcdn.com/0x0/n/cw/ec/33276/amaze-exterior-right-front-three-quarter.jpeg'
+  ];
+
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
         scrollDirection: Axis.vertical,
         physics: ClampingScrollPhysics(),
         shrinkWrap: true,
-        padding: const EdgeInsets.all(8),
-        itemCount: entries.length,
+        // padding: const EdgeInsets.all(4),
+        itemCount: carNames.length,
         itemBuilder: (BuildContext context, int index) {
-          // return Container(
-          //   height: 50,
-          //   color: Colors.amber[colorCodes[index]],
-          //   child: Center(child: Text('Entry ${entries[index]}')),
-          // );
           return Card(
             child: InkWell(
               splashColor: kCardBackgroundColor,
               onTap: () {
-                print('Card tapped.');
+                // print(index);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        ChooseCarModel(carName: carNames[index]),
+                  ),
+                );
               },
               child: Container(
-                width: 50 * SizeConfig.heightMultiplier,
-                height: 20 * SizeConfig.heightMultiplier,
-                child: Text('A card that can be tapped'),
+                // width: 50 * SizeConfig.heightMultiplier,
+                height: 35 * SizeConfig.heightMultiplier,
+                child: Column(
+                  children: [
+                    Image.network(
+                      carPhotos[index],
+                      height: 25 * SizeConfig.heightMultiplier,
+                      // width: double.infinity,
+                      fit: BoxFit.fill,
+                    ),
+                    Container(
+                      height: 10 * SizeConfig.heightMultiplier,
+                      width: double.infinity,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 5,
+                        vertical: 10,
+                      ),
+                      child: Center(
+                        child: Text(carNames[index],
+                            style: AppTheme.dashboardCarHeading),
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
           );
