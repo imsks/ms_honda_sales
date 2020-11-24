@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:ms_honda_sales/models/cars.dart';
 import 'package:ms_honda_sales/utilities/constants/styles.dart';
 import 'package:ms_honda_sales/utilities/globalConstants.dart';
 import 'package:ms_honda_sales/utilities/styles/size_config.dart';
 import 'package:ms_honda_sales/components/navbar.dart';
 import 'package:ms_honda_sales/screens/cars/choose_modal.dart';
+import 'package:provider/provider.dart';
 
 class CarsShowcase extends StatelessWidget {
   static const String id = 'carshowcase';
@@ -56,6 +58,11 @@ class CarList extends StatelessWidget {
     'https://imgd.aeplcdn.com/0x0/n/cw/ec/33276/amaze-exterior-right-front-three-quarter.jpeg'
   ];
 
+  void _updateCarDetails(BuildContext context, int index, String carName) {
+    Provider.of<CarDetailsProvider>(context, listen: false)
+        .updateCarDetails(index, carName);
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
@@ -69,7 +76,7 @@ class CarList extends StatelessWidget {
             child: InkWell(
               splashColor: kCardBackgroundColor,
               onTap: () {
-                // print(index);
+                _updateCarDetails(context, 0, carNames[index]);
                 Navigator.push(
                   context,
                   MaterialPageRoute(

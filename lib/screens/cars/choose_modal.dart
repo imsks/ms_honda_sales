@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:ms_honda_sales/models/cars.dart';
+import 'package:ms_honda_sales/screens/cars/car_details.dart';
 import 'package:ms_honda_sales/utilities/constants/styles.dart';
 import 'package:ms_honda_sales/utilities/globalConstants.dart';
 import 'package:ms_honda_sales/utilities/styles/size_config.dart';
 import 'package:ms_honda_sales/components/navbar.dart';
+import 'package:provider/provider.dart';
 
 class ChooseCarModel extends StatelessWidget {
   final String carName;
@@ -55,10 +58,18 @@ class CarDetailDropdowns extends StatefulWidget {
 
 class _CarDetailDropdownsState extends State<CarDetailDropdowns> {
   String carType = 'Petrol';
-  String carModel = 'Model A';
+  String carModel = '1.2 EMT';
+
+  void _updateCarDetails(BuildContext context, int index, String carType) {
+    Provider.of<CarDetailsProvider>(context, listen: false)
+        .updateCarDetails(index, carType);
+  }
 
   @override
   Widget build(BuildContext context) {
+    var carDetails = Provider.of<CarDetailsProvider>(context).getCarDetails;
+    print(carDetails);
+
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: 3 * SizeConfig.heightMultiplier,
@@ -73,7 +84,7 @@ class _CarDetailDropdownsState extends State<CarDetailDropdowns> {
               children: [
                 Text("Car Type"),
                 DropdownButton<String>(
-                  value: carType,
+                  value: carDetails[1],
                   icon: Icon(Icons.arrow_downward),
                   iconSize: 24,
                   elevation: 16,
@@ -86,6 +97,7 @@ class _CarDetailDropdownsState extends State<CarDetailDropdowns> {
                     setState(() {
                       carType = newValue;
                     });
+                    _updateCarDetails(context, 1, newValue);
                   },
                   items: <String>['Petrol', 'Diesel']
                       .map<DropdownMenuItem<String>>((String value) {
@@ -101,10 +113,11 @@ class _CarDetailDropdownsState extends State<CarDetailDropdowns> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text("Car Model"),
                 DropdownButton<String>(
-                  value: carModel,
+                  value: carDetails[2],
                   icon: Icon(Icons.arrow_downward),
                   iconSize: 24,
                   elevation: 16,
@@ -117,9 +130,14 @@ class _CarDetailDropdownsState extends State<CarDetailDropdowns> {
                     setState(() {
                       carModel = newValue;
                     });
+                    _updateCarDetails(context, 2, newValue);
                   },
-                  items: <String>['Model A', 'Model B', 'Model C', 'Model D']
-                      .map<DropdownMenuItem<String>>((String value) {
+                  items: <String>[
+                    '1.2 EMT(P)',
+                    'Model A',
+                    '1.2 SMT',
+                    '1.2 SMT(P)'
+                  ].map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
                       child: Text(value),
@@ -130,7 +148,14 @@ class _CarDetailDropdownsState extends State<CarDetailDropdowns> {
             ),
           ),
           RaisedButton(
-            onPressed: () => {},
+            onPressed: () => {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CarDetails(),
+                ),
+              )
+            },
             hoverElevation: 2,
             padding: EdgeInsets.symmetric(
               horizontal: 10,

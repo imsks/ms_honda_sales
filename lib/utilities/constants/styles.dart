@@ -51,6 +51,12 @@ class AppTheme {
     fontWeight: FontWeight.w500,
   );
 
+  static final TextStyle carDetailsHeaderParamsText = TextStyle(
+    fontSize: 2.5 * SizeConfig.textMultiplier,
+    color: kWhiteColor,
+    fontWeight: FontWeight.w500,
+  );
+
   //  ActionCard Styling
   static final TextStyle actionCardTime = TextStyle(
       fontWeight: FontWeight.w300,
