@@ -9,8 +9,10 @@ import 'package:provider/provider.dart';
 
 class ChooseCarModel extends StatelessWidget {
   final String carName;
+  final List<String> carModels;
 
-  const ChooseCarModel({Key key, this.carName}) : super(key: key);
+  const ChooseCarModel({Key key, this.carName, this.carModels})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +44,7 @@ class ChooseCarModel extends StatelessWidget {
                   ],
                 ),
               ),
-              CarDetailDropdowns(),
+              CarDetailDropdowns(carModels: carModels),
             ],
           ),
         ),
@@ -52,14 +54,15 @@ class ChooseCarModel extends StatelessWidget {
 }
 
 class CarDetailDropdowns extends StatefulWidget {
+  final List<String> carModels;
+
+  const CarDetailDropdowns({Key key, this.carModels}) : super(key: key);
+
   @override
   _CarDetailDropdownsState createState() => _CarDetailDropdownsState();
 }
 
 class _CarDetailDropdownsState extends State<CarDetailDropdowns> {
-  String carType = 'Petrol';
-  String carModel = '1.2 EMT';
-
   void _updateCarDetails(BuildContext context, int index, String carType) {
     Provider.of<CarDetailsProvider>(context, listen: false)
         .updateCarDetails(index, carType);
@@ -67,6 +70,9 @@ class _CarDetailDropdownsState extends State<CarDetailDropdowns> {
 
   @override
   Widget build(BuildContext context) {
+    String carType = 'Petrol';
+    String carModel = widget.carModels[0];
+
     var carDetails = Provider.of<CarDetailsProvider>(context).getCarDetails;
     print(carDetails);
 
@@ -117,7 +123,7 @@ class _CarDetailDropdownsState extends State<CarDetailDropdowns> {
               children: [
                 Text("Car Model"),
                 DropdownButton<String>(
-                  value: carDetails[2],
+                  value: carModel,
                   icon: Icon(Icons.arrow_downward),
                   iconSize: 24,
                   elevation: 16,
@@ -127,17 +133,14 @@ class _CarDetailDropdownsState extends State<CarDetailDropdowns> {
                     color: Colors.deepPurpleAccent,
                   ),
                   onChanged: (String newValue) {
+                    print(widget.carModels);
                     setState(() {
                       carModel = newValue;
                     });
                     _updateCarDetails(context, 2, newValue);
                   },
-                  items: <String>[
-                    '1.2 EMT(P)',
-                    'Model A',
-                    '1.2 SMT',
-                    '1.2 SMT(P)'
-                  ].map<DropdownMenuItem<String>>((String value) {
+                  items: widget.carModels
+                      .map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
                       child: Text(value),
