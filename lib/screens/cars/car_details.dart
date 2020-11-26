@@ -6,6 +6,7 @@ import 'package:ms_honda_sales/utilities/constants/styles.dart';
 import 'package:ms_honda_sales/utilities/globalConstants.dart';
 import 'package:ms_honda_sales/utilities/styles/size_config.dart';
 import 'package:ms_honda_sales/services/cars.dart';
+import 'package:ms_honda_sales/models/CarAccesseriesData.dart';
 
 class CarDetails extends StatelessWidget {
   @override
@@ -14,203 +15,183 @@ class CarDetails extends StatelessWidget {
 
     var carDetails = Provider.of<CarDetailsProvider>(context).getCarDetails;
 
-    List<String> carAccessories = [];
-
-    getACarData() async {
-      final temp = await carService.getACarData(
-          carDetails[0], carDetails[2], carDetails[1]);
-
-      carAccessories = temp;
-      // print(temp);
-
-      // // Set Parameters
-      // exShowRoom = temp["exShowRoom"];
-      // taxCollectedAtSource = temp["taxCollectedAtSource"];
-      // insuranceFor1Year = temp["insuranceFor1Year"];
-      // insuranceDifferentsAmountFor2Years =
-      //     temp["insuranceDifferentsAmountFor2Years"];
-      // roadTaxAndRegistrationCharges = temp["roadTaxAndRegistrationCharges"];
-      // fastag = temp["fastag"];
-      // basicAccessoriesKit = temp["basicAccessoriesKit"];
-      // extendedWarranty = temp["extendedWarranty"];
-      // roadSideAssistance = temp["roadSideAssistance"];
-      // onRoadPrice = temp["onRoadPrice"];
-      // zeroDepPolicy = temp["zeroDepPolicy"];
-      // hydrostaticLockCoverAndKeyCost = temp["hydrostaticLockCoverAndKeyCost"];
-      // returnToInvoice = temp["returnToInvoice"];
-      // priceToConnectedDevice = temp["priceToConnectedDevice"];
-      // totalOnRoadPriceWithOptionalAddOns =
-      //     temp["totalOnRoadPriceWithOptionalAddOns"];
-      // oneYearSubscriptionOfConnectedDevices =
-      //     temp["oneYearSubscriptionOfConnectedDevices"];
-
-      return temp;
-    }
-
     return Scaffold(
       appBar: globalAppBar,
       backgroundColor: kBackgroundColor,
-      body: FutureBuilder(
-        future: getACarData(),
-        builder: (context, snapshot) {
-          if (snapshot.data != null) {
-            if (snapshot.hasData) {
-              print(snapshot.data);
-              print("S");
-              return SingleChildScrollView(
-                child: Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 3 * SizeConfig.heightMultiplier,
-                    vertical: 2 * SizeConfig.heightMultiplier,
-                  ),
-                  child: Column(
-                    children: [
-                      // Header
-                      Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 0, vertical: 30),
-                        color: Colors.black,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          crossAxisAlignment: CrossAxisAlignment.baseline,
-                          children: [
-                            Text(
-                              carDetails[0],
-                              style: AppTheme.carDetailsHeaderParamsText,
-                            ),
-                            Text(
-                              carDetails[1],
-                              style: AppTheme.carDetailsHeaderParamsText,
-                            ),
-                            Text(
-                              carDetails[2],
-                              style: AppTheme.carDetailsHeaderParamsText,
-                            ),
-                          ],
-                        ),
-                      ),
-                      CarAccesseries(),
-                      Container(
-                        child: RaisedButton(
-                          color: Colors.green,
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 24, vertical: 12),
-                          textColor: Colors.white,
-                          onPressed: () => {},
-                          child: Text(
-                            "Get Quote",
-                            style: TextStyle(
-                              fontSize: 15,
-                            ),
-                          ),
-                        ),
-                      )
-                    ],
+      body: SingleChildScrollView(
+        child: Container(
+          padding: EdgeInsets.symmetric(
+            horizontal: 3 * SizeConfig.heightMultiplier,
+            vertical: 2 * SizeConfig.heightMultiplier,
+          ),
+          child: Column(
+            children: [
+              // Header
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 0, vertical: 30),
+                color: Colors.black,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.baseline,
+                  children: [
+                    Text(
+                      carDetails[0],
+                      style: AppTheme.carDetailsHeaderParamsText,
+                    ),
+                    Text(
+                      carDetails[1],
+                      style: AppTheme.carDetailsHeaderParamsText,
+                    ),
+                    Text(
+                      carDetails[2],
+                      style: AppTheme.carDetailsHeaderParamsText,
+                    ),
+                  ],
+                ),
+              ),
+              CarAccesseries(),
+              Container(
+                child: RaisedButton(
+                  color: Colors.green,
+                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  textColor: Colors.white,
+                  onPressed: () => {},
+                  child: Text(
+                    "Get Quote",
+                    style: TextStyle(
+                      fontSize: 15,
+                    ),
                   ),
                 ),
-              );
-            } else {
-              Container(
-                child: Text("Not Loaded"),
-              );
-            }
-          } else {
-            return Container(
-              child: Text("No data"),
-            );
-          }
-        },
+              )
+            ],
+          ),
+        ),
       ),
     );
   }
 }
 
 class CarAccesseries extends StatelessWidget {
-  // Define Accesseries
-    String exShowRoom = '';
-    String taxCollectedAtSource = '';
-    String insuranceFor1Year = '';
-    String insuranceDifferentsAmountFor2Years = '';
-    String roadTaxAndRegistrationCharges = '';
-    String fastag = '';
-    String basicAccessoriesKit = '';
-    String extendedWarranty = '';
-    String roadSideAssistance = '';
-    String onRoadPrice = '';
-    String zeroDepPolicy = '';
-    String hydrostaticLockCoverAndKeyCost = '';
-    String returnToInvoice = '';
-    String priceToConnectedDevice = '';
-    String totalOnRoadPriceWithOptionalAddOns = '';
-    String oneYearSubscriptionOfConnectedDevices = '';
-    
-  final List<String> featureNames = <String>[
-    'Feature 1',
-    'Feature 2',
-    'Feature 3',
-    'Feature 4',
-    'Feature 5',
-    'Feature 6',
-    'Feature 7',
-    'Feature 8',
-    'Feature 9',
-    'Feature 10',
-    'Feature 11',
-    'Feature 12',
-    'Feature 13',
-    'Feature 14',
-    'Feature 15',
-    'Feature 16',
-  ];
-
-  final List<String> featureValues = <String>[
-    '1',
-    '2',
-    '3',
-    '4',
-    '5',
-    '6',
-    '7',
-    '8',
-    '9',
-    '10',
-    '11',
-    '12',
-    '13',
-    '14',
-    '15',
-    '16',
-  ];
-
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 0, vertical: 16),
-      child: ListView.builder(
-        scrollDirection: Axis.vertical,
-        physics: ClampingScrollPhysics(),
-        shrinkWrap: true,
-        // padding: const EdgeInsets.all(4),
-        itemCount: featureNames.length,
-        itemBuilder: (BuildContext context, int index) {
+    // Get Data from DB
+    CarService carService = CarService();
+
+    var carDetails = Provider.of<CarDetailsProvider>(context).getCarDetails;
+
+    // Feature Names
+    final List<String> featureNames = <String>[
+      'Ex Show Room',
+      'Tax Collected At Source',
+      'Insurance For 1 Year',
+      'Insurance Differents Amount For 2 Years',
+      'Road Tax And Registration Charges',
+      'Fastag',
+      'Basic Accessories Kit',
+      'Extended Warranty',
+      'Road Side Assistance',
+      'On Road Price',
+      'Zero Dep Policy',
+      'Hydrostatic Lock Cover And Key Cost',
+      'Return To Invoice',
+      'Price To Connected Device',
+      'Total On Road Price With Optional Add-Ons',
+      'One Year Subscription Of Connected Devices',
+    ];
+
+    // Feature Values
+    final List<int> featureValues = <int>[];
+
+    getACarData() async {
+      final data = await carService.getACarData(
+          carDetails[0], carDetails[2], carDetails[1]);
+
+      // If Error
+      if (data["message"] != null) {
+        print(data);
+        return data;
+      }
+
+      // Set the data getting from DB
+      featureValues.add(data["exShowRoom"]);
+      featureValues.add(data["taxCollectedAtSource"]);
+      featureValues.add(data["insuranceFor1Year"]);
+      featureValues.add(data["insuranceDifferentsAmountFor2Years"]);
+      featureValues.add(data["roadTaxAndRegistrationCharges"]);
+      featureValues.add(data["fastag"]);
+      featureValues.add(data["basicAccessoriesKit"]);
+      featureValues.add(data["extendedWarranty"]);
+      featureValues.add(data["roadSideAssistance"]);
+      featureValues.add(data["onRoadPrice"]);
+      featureValues.add(data["zeroDepPolicy"]);
+      featureValues.add(data["hydrostaticLockCoverAndKeyCost"]);
+      featureValues.add(data["returnToInvoice"]);
+      featureValues.add(data["priceToConnectedDevice"]);
+      featureValues.add(data["totalOnRoadPriceWithOptionalAddOns"]);
+      featureValues.add(data["oneYearSubscriptionOfConnectedDevices"]);
+      return data;
+    }
+
+    return FutureBuilder(
+      future: getACarData(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+        print(snapshot.data["message"]);
+          if (snapshot.data["message"] == null) {
+            return Container(
+              padding: EdgeInsets.symmetric(horizontal: 0, vertical: 16),
+              child: ListView.builder(
+                scrollDirection: Axis.vertical,
+                physics: ClampingScrollPhysics(),
+                shrinkWrap: true,
+                // padding: const EdgeInsets.all(4),
+                itemCount: featureNames.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Container(
+                    color: Colors.grey[200],
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                    margin: EdgeInsets.symmetric(horizontal: 0, vertical: 4),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Flexible(
+                          child: Container(
+                            padding: new EdgeInsets.only(right: 15.0),
+                            child: Text(
+                              featureNames[index],
+                              overflow: TextOverflow.visible,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          featureValues[index].toString(),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            );
+          } else {
+            return Container(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              child: Center(
+                child: Text("No data exists"),
+              ),
+            );
+          }
+        } else {
           return Container(
-            color: Colors.grey[200],
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-            margin: EdgeInsets.symmetric(horizontal: 0, vertical: 4),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  featureNames[index],
-                ),
-                Text(
-                  featureValues[index],
-                ),
-              ],
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            child: Center(
+              child: Text("Loading"),
             ),
           );
-        },
-      ),
+        }
+      },
     );
   }
 }

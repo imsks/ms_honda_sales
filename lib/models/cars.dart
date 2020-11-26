@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class CarDetailsProvider with ChangeNotifier {
-  List<String> currentCarDetails = ["Amaze", "Diesel", "1.2 EMT"];
+  List<String> currentCarDetails = ["Amaze", "Petrol", "1.2 EMT"];
 
   List<String> get getCarDetails {
     return currentCarDetails;
