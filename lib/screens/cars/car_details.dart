@@ -1,4 +1,6 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:ms_honda_sales/screens/cars/get_quote_pdf.dart';
 import 'package:provider/provider.dart';
 import 'package:ms_honda_sales/components/navbar.dart';
 import 'package:ms_honda_sales/models/cars.dart';
@@ -6,7 +8,9 @@ import 'package:ms_honda_sales/utilities/constants/styles.dart';
 import 'package:ms_honda_sales/utilities/globalConstants.dart';
 import 'package:ms_honda_sales/utilities/styles/size_config.dart';
 import 'package:ms_honda_sales/services/cars.dart';
-import 'package:ms_honda_sales/models/CarAccesseriesData.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
 
 class CarDetails extends StatelessWidget {
   @override
@@ -50,20 +54,6 @@ class CarDetails extends StatelessWidget {
                 ),
               ),
               CarAccesseries(),
-              Container(
-                child: RaisedButton(
-                  color: Colors.green,
-                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                  textColor: Colors.white,
-                  onPressed: () => {},
-                  child: Text(
-                    "Get Quote",
-                    style: TextStyle(
-                      fontSize: 15,
-                    ),
-                  ),
-                ),
-              )
             ],
           ),
         ),
@@ -79,6 +69,9 @@ class CarAccesseries extends StatelessWidget {
     CarService carService = CarService();
 
     var carDetails = Provider.of<CarDetailsProvider>(context).getCarDetails;
+
+    // Define Data map
+    var dataMap = Map();
 
     // Feature Names
     final List<String> featureNames = <String>[
@@ -130,47 +123,141 @@ class CarAccesseries extends StatelessWidget {
       featureValues.add(data["priceToConnectedDevice"]);
       featureValues.add(data["totalOnRoadPriceWithOptionalAddOns"]);
       featureValues.add(data["oneYearSubscriptionOfConnectedDevices"]);
+
+      // Data Map
+      dataMap = {
+        "Ex Show Room": data["exShowRoom"],
+        "Tax Collected At Source": data["taxCollectedAtSource"],
+        "Insurance For 1 Year": data["insuranceFor1Year"],
+        "Insurance Differents Amount For 2 Years":
+            data["insuranceDifferentsAmountFor2Years"],
+        "Road Tax And Registration Charges":
+            data["roadTaxAndRegistrationCharges"],
+        "Fastag": data["fastag"],
+        "Basic Accessories Kit": data["basicAccessoriesKit"],
+        "Extended Warranty": data["extendedWarranty"],
+        "Road Side Assistance": data["roadSideAssistance"],
+        "Zero Dep Policy": data["zeroDepPolicy"],
+        "Hydrostatic Lock Cover And Key Cost":
+            data["hydrostaticLockCoverAndKeyCost"],
+        "Return To Invoice": data["exShowRoom"],
+        "Price To Connected Device": data["returnToInvoice"],
+        "Total On Road Price With Optional Add-Ons":
+            data["totalOnRoadPriceWithOptionalAddOns"],
+        "One Year Subscription Of Connected Devices":
+            data["oneYearSubscriptionOfConnectedDevices"],
+      };
+      print(dataMap);
       return data;
+    }
+
+    // Generate Dynamic PDF
+    _generatePdfAndView(context) async {
+      final pw.Document pdf = pw.Document(deflate: zlib.encode);
+      pdf.addPage(
+        pw.MultiPage(
+          build: (context) {
+            return <pw.Widget>[
+              pw.Header(
+                  level: 0,
+                  child: pw.Text("Car Details - " +
+                      carDetails[0] +
+                      " - " +
+                      carDetails[1] +
+                      " - " +
+                      carDetails[2])),
+              pw.Table.fromTextArray(
+                context: context,
+                data: <List<String>>[
+                  // These will be your columns as Parameter X, Parameter Y etc.
+                  <String>[
+                    'Parameter',
+                    'Price',
+                  ],
+                  for (int i = 0; i < featureNames.length; i++)
+                    <String>[
+                      // ith element will go in ith column means
+                      // featureNames[i] in 1st column
+                      featureNames[i],
+                      // featureValues[i] in 2nd column
+                      featureValues[i].toString(),
+                    ],
+                ],
+              ),
+            ];
+          },
+        ),
+      );
+
+      final String dir = (await getApplicationDocumentsDirectory()).path;
+      final String path = '$dir/get_quote_1.pdf';
+      final File file = File(path);
+      await file.writeAsBytes(pdf.save());
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => PdfViewerPage(path: path),
+        ),
+      );
     }
 
     return FutureBuilder(
       future: getACarData(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-        print(snapshot.data["message"]);
+          print(snapshot.data["message"]);
           if (snapshot.data["message"] == null) {
             return Container(
               padding: EdgeInsets.symmetric(horizontal: 0, vertical: 16),
-              child: ListView.builder(
-                scrollDirection: Axis.vertical,
-                physics: ClampingScrollPhysics(),
-                shrinkWrap: true,
-                // padding: const EdgeInsets.all(4),
-                itemCount: featureNames.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Container(
-                    color: Colors.grey[200],
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                    margin: EdgeInsets.symmetric(horizontal: 0, vertical: 4),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Flexible(
-                          child: Container(
-                            padding: new EdgeInsets.only(right: 15.0),
-                            child: Text(
-                              featureNames[index],
-                              overflow: TextOverflow.visible,
+              child: Column(
+                children: [
+                  ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    physics: ClampingScrollPhysics(),
+                    shrinkWrap: true,
+                    // padding: const EdgeInsets.all(4),
+                    itemCount: featureNames.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Container(
+                        color: Colors.grey[200],
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                        margin:
+                            EdgeInsets.symmetric(horizontal: 0, vertical: 4),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Flexible(
+                              child: Container(
+                                padding: new EdgeInsets.only(right: 15.0),
+                                child: Text(
+                                  featureNames[index],
+                                  overflow: TextOverflow.visible,
+                                ),
+                              ),
                             ),
-                          ),
+                            Text(
+                              featureValues[index].toString(),
+                            ),
+                          ],
                         ),
-                        Text(
-                          featureValues[index].toString(),
-                        ),
-                      ],
+                      );
+                    },
+                  ),
+                  RaisedButton(
+                    color: Colors.green,
+                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    textColor: Colors.white,
+                    onPressed: () async {
+                      _generatePdfAndView(context);
+                    },
+                    child: Text(
+                      "Get Quote",
+                      style: TextStyle(
+                        fontSize: 15,
+                      ),
                     ),
-                  );
-                },
+                  ),
+                ],
               ),
             );
           } else {
