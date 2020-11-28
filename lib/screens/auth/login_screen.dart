@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:ms_honda_sales/screens/cars/dashboard.dart';
 import 'package:ms_honda_sales/components/Button.dart';
 import 'package:ms_honda_sales/components/input_text_field.dart';
-import 'package:ms_honda_sales/services/sharedPrefs.dart';
+import 'package:ms_honda_sales/services/auth_service.dart';
+import 'package:ms_honda_sales/services/wrapper.dart';
 import 'package:ms_honda_sales/utilities/globalConstants.dart';
 import 'package:ms_honda_sales/utilities/styles/size_config.dart';
 import 'package:ms_honda_sales/utilities/constants/styles.dart';
@@ -18,15 +19,19 @@ class _LoginScreenState extends State<LoginScreen> {
   String password = "";
   final loginController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  AuthService auth = new AuthService();
 
   Future _submitform() async {
     if (_formKey.currentState.validate()) {
       try {
-        var sharedPref = SharedPref();
-        sharedPref.save('user', 123);
+        // var sharedPref = SharedPref();
+        // sharedPref.save('user', 123);
+
+        await auth.login(userName, password);
+
         Navigator.pop(context);
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => CarsShowcase()));
+            context, MaterialPageRoute(builder: (context) => Wrapper()));
       } catch (e) {
         print(e);
       }

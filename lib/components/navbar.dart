@@ -5,5 +5,10 @@ final AppBar globalAppBar = AppBar(
   title: Center(
     child: const Text('MS Honda'),
   ),
+  actions: [
+    Center(
+      child: Text("Hi user"),
+    ),
+  ],
   backgroundColor: kBlackColor,
 );

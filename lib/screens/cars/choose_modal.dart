@@ -150,7 +150,8 @@ class _CarDetailDropdownsState extends State<CarDetailDropdowns> {
           ),
           Center(
             child: RaisedButton(
-              textColor: Colors.green,
+              textColor: Colors.white,
+              color: Colors.black,
               focusElevation: 0,
               hoverElevation: 0,
               onPressed: () => {
@@ -162,8 +163,8 @@ class _CarDetailDropdownsState extends State<CarDetailDropdowns> {
                 )
               },
               padding: EdgeInsets.symmetric(
-                horizontal: 10,
-                vertical: 10,
+                horizontal: 40,
+                vertical: 15,
               ),
               child: const Text(
                 'View Details',
