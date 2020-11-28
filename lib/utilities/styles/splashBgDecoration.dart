@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 Decoration bgBoxDecoration(List bgColor) {
-  // print(bgColor);
   var noOfColors = bgColor.length;
   List<double> noOfParts = [];
   double temp = 0;

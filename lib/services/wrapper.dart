@@ -16,7 +16,9 @@ class Wrapper extends StatelessWidget {
         print(data);
         if (data != null) {
           return true;
-        } else {}
+        } else {
+          return false;
+        }
       } catch (Exception) {
         return false;
       }

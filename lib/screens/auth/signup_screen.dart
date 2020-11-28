@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:ms_honda_sales/screens/auth/signup_screen.dart';
-import 'package:ms_honda_sales/screens/cars/dashboard.dart';
 import 'package:ms_honda_sales/components/Button.dart';
 import 'package:ms_honda_sales/components/input_text_field.dart';
 import 'package:ms_honda_sales/services/auth_service.dart';
@@ -9,13 +7,13 @@ import 'package:ms_honda_sales/utilities/globalConstants.dart';
 import 'package:ms_honda_sales/utilities/styles/size_config.dart';
 import 'package:ms_honda_sales/utilities/constants/styles.dart';
 
-class LoginScreen extends StatefulWidget {
+class SignupScreen extends StatefulWidget {
   static const String id = 'loginScreen';
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _SignupScreenState createState() => _SignupScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SignupScreenState extends State<SignupScreen> {
   String userName = "";
   String password = "";
   final loginController = TextEditingController();
@@ -25,10 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Future _submitform() async {
     if (_formKey.currentState.validate()) {
       try {
-        // var sharedPref = SharedPref();
-        // sharedPref.save('user', 123);
-
-        await auth.login(userName, password);
+        await auth.signup(userName, password);
 
         Navigator.pop(context);
         Navigator.push(
@@ -89,12 +84,11 @@ class _LoginScreenState extends State<LoginScreen> {
                           Align(
                             alignment: Alignment.topLeft,
                             child: Text(
-                              "Welcome!",
+                              "Ready to signup?",
                               style: TextStyle(
-                                fontSize: 3 * SizeConfig.heightMultiplier,
-                                color: kBlackColor,
-                                fontWeight: FontWeight.w500,
-                              ),
+                                  fontSize: 3 * SizeConfig.heightMultiplier,
+                                  color: kBlackColor,
+                                  fontWeight: FontWeight.w500),
                             ),
                           ),
                           SizedBox(
@@ -110,7 +104,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             },
                             validator: (value) {
                               if (value.isEmpty) {
-                                return 'Please enter name';
+                                return 'Please enter user name';
                               }
                               return null;
                             },
@@ -145,7 +139,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   Center(
                     child: Button(
-                      buttonTitle: "Log In",
+                      buttonTitle: "Sign up",
                       buttonColor: kBlackColor,
                       buttonTextColor: Colors.white,
                       buttonTextSize: 3.2 * SizeConfig.heightMultiplier,
@@ -158,40 +152,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           print(e);
                         }
                         //STOP LOADING HERE
-                      },
-                    ),
-                  ),
-                  SizedBox(
-                    height: 2.2 * SizeConfig.heightMultiplier,
-                  ),
-                  Center(
-                    child: Text(
-                      "OR",
-                      style: TextStyle(
-                        fontSize: 2 * SizeConfig.heightMultiplier,
-                        color: kBlackColor,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 2.2 * SizeConfig.heightMultiplier,
-                  ),
-                  Center(
-                    child: Button(
-                      buttonTitle: "Sign up",
-                      buttonColor: kBlackColor,
-                      buttonTextColor: Colors.white,
-                      buttonTextSize: 3.2 * SizeConfig.heightMultiplier,
-                      minimumWidth: 33 * SizeConfig.heightMultiplier,
-                      height: 6.9 * SizeConfig.heightMultiplier,
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => SignupScreen(),
-                          ),
-                        );
                       },
                     ),
                   ),

@@ -66,11 +66,7 @@ class CarList extends StatelessWidget {
 
   getAllCarsData() async {
     final temp = await carService.getAllCarsData();
-    // print(temp.length);
-    // print(temp[0]["data"]["carData"]["modelNo"]);
-
     for (int i = 0; i < temp.length; i++) {
-      print(temp[i]["data"]["carData"]["modelNo"]);
       // Set Car Names
       if (carNames.indexOf(temp[i]["data"]["carData"]["carName"]) == -1)
         carNames.add(temp[i]["data"]["carData"]["carName"]);
@@ -151,7 +147,9 @@ class CarList extends StatelessWidget {
               );
             } else {
               return Container(
-                child: Text("Not Loaded"),
+                child: Center(
+                  child: Text("Not Loaded"),
+                ),
               );
             }
           },

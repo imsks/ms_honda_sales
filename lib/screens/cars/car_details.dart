@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:ms_honda_sales/services/sharedPrefs.dart';
 import 'package:printing/printing.dart';
 import 'package:provider/provider.dart';
 import 'package:ms_honda_sales/components/navbar.dart';
@@ -98,7 +99,6 @@ class CarAccesseries extends StatelessWidget {
 
       // If Error
       if (data["message"] != null) {
-        print(data);
         return data;
       }
 
@@ -143,25 +143,32 @@ class CarAccesseries extends StatelessWidget {
         "One Year Subscription Of Connected Devices":
             data["oneYearSubscriptionOfConnectedDevices"],
       };
-      print(dataMap);
       return data;
     }
 
     // Generate Dynamic PDF
     _generatePdfAndView(context) async {
+      // Get User Details
+      SharedPref sharedPref = SharedPref();
+      var data = await sharedPref.read("user");
+// data["userName"]
+      // Defining PDF setup
       final pw.Document pdf = pw.Document(deflate: zlib.encode);
       pdf.addPage(
         pw.MultiPage(
           build: (context) {
             return <pw.Widget>[
               pw.Header(
-                  level: 0,
-                  child: pw.Text("Car Details - " +
+                level: 0,
+                child: pw.Text(
+                  "Car Details - " +
                       carDetails[0] +
                       " - " +
                       carDetails[1] +
                       " - " +
-                      carDetails[2])),
+                      carDetails[2],
+                ),
+              ),
               pw.Table.fromTextArray(
                 context: context,
                 data: <List<String>>[
@@ -180,13 +187,31 @@ class CarAccesseries extends StatelessWidget {
                     ],
                 ],
               ),
+              pw.Footer(
+                title: pw.Text(
+                  "Quoted by " +
+                      data["userName"] +
+                      " at " +
+                      DateTime.parse(DateTime.now().toString()).day.toString() +
+                      " " +
+                      DateTime.parse(DateTime.now().toString())
+                          .month
+                          .toString() +
+                      " " +
+                      DateTime.parse(DateTime.now().toString()).year.toString(),
+                ),
+              ),
             ];
           },
         ),
       );
 
-      final fileName =
-          carDetails[0] + " - " + carDetails[1] + " - " + carDetails[2] + ".pdf";
+      final fileName = carDetails[0] +
+          " - " +
+          carDetails[1] +
+          " - " +
+          carDetails[2] +
+          ".pdf";
 
       await Printing.sharePdf(bytes: pdf.save(), filename: fileName);
     }
@@ -195,7 +220,6 @@ class CarAccesseries extends StatelessWidget {
       future: getACarData(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          print(snapshot.data["message"]);
           if (snapshot.data["message"] == null) {
             return Container(
               padding: EdgeInsets.symmetric(horizontal: 0, vertical: 16),

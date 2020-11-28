@@ -74,7 +74,6 @@ class _CarDetailDropdownsState extends State<CarDetailDropdowns> {
     String carModel = '';
 
     var carDetails = Provider.of<CarDetailsProvider>(context).getCarDetails;
-    print(carDetails);
 
     return Container(
       padding: EdgeInsets.symmetric(
