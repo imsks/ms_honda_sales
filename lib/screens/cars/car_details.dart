@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:ms_honda_sales/screens/cars/get_quote_pdf.dart';
+import 'package:printing/printing.dart';
 import 'package:provider/provider.dart';
 import 'package:ms_honda_sales/components/navbar.dart';
 import 'package:ms_honda_sales/models/cars.dart';
@@ -8,15 +8,11 @@ import 'package:ms_honda_sales/utilities/constants/styles.dart';
 import 'package:ms_honda_sales/utilities/globalConstants.dart';
 import 'package:ms_honda_sales/utilities/styles/size_config.dart';
 import 'package:ms_honda_sales/services/cars.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
 class CarDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    CarService carService = CarService();
-
     var carDetails = Provider.of<CarDetailsProvider>(context).getCarDetails;
 
     return Scaffold(
@@ -189,15 +185,10 @@ class CarAccesseries extends StatelessWidget {
         ),
       );
 
-      final String dir = (await getApplicationDocumentsDirectory()).path;
-      final String path = '$dir/get_quote_1.pdf';
-      final File file = File(path);
-      await file.writeAsBytes(pdf.save());
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (_) => PdfViewerPage(path: path),
-        ),
-      );
+      final fileName =
+          carDetails[0] + " - " + carDetails[1] + " - " + carDetails[2] + ".pdf";
+
+      await Printing.sharePdf(bytes: pdf.save(), filename: fileName);
     }
 
     return FutureBuilder(

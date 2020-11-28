@@ -19,34 +19,34 @@ class ChooseCarModel extends StatelessWidget {
     return Scaffold(
       appBar: globalAppBar,
       backgroundColor: kBackgroundColor,
-      body: SingleChildScrollView(
-        child: Container(
-          padding: EdgeInsets.symmetric(
-            horizontal: 3 * SizeConfig.heightMultiplier,
-            vertical: 2 * SizeConfig.heightMultiplier,
-          ),
-          child: Column(
-            children: [
-              // Header
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "You're viewing",
-                      style: AppTheme.chooseCarModelHeaderSubheading,
-                    ),
-                    Text(
-                      carName,
-                      style: AppTheme.chooseCarModelHeaderHeading,
-                    ),
-                  ],
-                ),
+      body: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: 3 * SizeConfig.heightMultiplier,
+          vertical: 5 * SizeConfig.heightMultiplier,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Header
+            Padding(
+              padding: EdgeInsets.symmetric(
+                  horizontal: 3 * SizeConfig.heightMultiplier, vertical: 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "You're viewing",
+                    style: AppTheme.chooseCarModelHeaderSubheading,
+                  ),
+                  Text(
+                    carName,
+                    style: AppTheme.chooseCarModelHeaderHeading,
+                  ),
+                ],
               ),
-              CarDetailDropdowns(carModels: carModels),
-            ],
-          ),
+            ),
+            CarDetailDropdowns(carModels: carModels),
+          ],
         ),
       ),
     );
@@ -70,8 +70,8 @@ class _CarDetailDropdownsState extends State<CarDetailDropdowns> {
 
   @override
   Widget build(BuildContext context) {
-    String carType = 'Petrol';
-    String carModel = widget.carModels[0];
+    String carType = '';
+    String carModel = '';
 
     var carDetails = Provider.of<CarDetailsProvider>(context).getCarDetails;
     print(carDetails);
@@ -87,18 +87,18 @@ class _CarDetailDropdownsState extends State<CarDetailDropdowns> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text("Car Type"),
                 DropdownButton<String>(
+                  isExpanded: true,
                   value: carDetails[1],
-                  icon: Icon(Icons.arrow_downward),
+                  itemHeight: 50,
+                  style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.black,
+                      fontWeight: FontWeight.w400),
                   iconSize: 24,
-                  elevation: 16,
-                  style: TextStyle(color: Colors.deepPurple),
-                  underline: Container(
-                    height: 2,
-                    color: Colors.deepPurpleAccent,
-                  ),
                   onChanged: (String newValue) {
                     setState(() {
                       carType = newValue;
@@ -123,17 +123,15 @@ class _CarDetailDropdownsState extends State<CarDetailDropdowns> {
               children: [
                 Text("Car Model"),
                 DropdownButton<String>(
-                  value: carModel,
-                  icon: Icon(Icons.arrow_downward),
+                  isExpanded: true,
+                  itemHeight: 50,
+                  style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.black,
+                      fontWeight: FontWeight.w400),
+                  value: carDetails[2],
                   iconSize: 24,
-                  elevation: 16,
-                  style: TextStyle(color: Colors.deepPurple),
-                  underline: Container(
-                    height: 2,
-                    color: Colors.deepPurpleAccent,
-                  ),
                   onChanged: (String newValue) {
-                    print(widget.carModels);
                     setState(() {
                       carModel = newValue;
                     });
@@ -150,24 +148,28 @@ class _CarDetailDropdownsState extends State<CarDetailDropdowns> {
               ],
             ),
           ),
-          RaisedButton(
-            onPressed: () => {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => CarDetails(),
+          Center(
+            child: RaisedButton(
+              textColor: Colors.green,
+              focusElevation: 0,
+              hoverElevation: 0,
+              onPressed: () => {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CarDetails(),
+                  ),
+                )
+              },
+              padding: EdgeInsets.symmetric(
+                horizontal: 10,
+                vertical: 10,
+              ),
+              child: const Text(
+                'View Details',
+                style: TextStyle(
+                  fontSize: 15,
                 ),
-              )
-            },
-            hoverElevation: 2,
-            padding: EdgeInsets.symmetric(
-              horizontal: 10,
-              vertical: 10,
-            ),
-            child: const Text(
-              'View Details',
-              style: TextStyle(
-                fontSize: 15,
               ),
             ),
           ),

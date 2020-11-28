@@ -70,7 +70,7 @@ class CarList extends StatelessWidget {
     // print(temp[0]["data"]["carData"]["modelNo"]);
 
     for (int i = 0; i < temp.length; i++) {
-       print(temp[i]["data"]["carData"]["modelNo"]);
+      print(temp[i]["data"]["carData"]["modelNo"]);
       // Set Car Names
       if (carNames.indexOf(temp[i]["data"]["carData"]["carName"]) == -1)
         carNames.add(temp[i]["data"]["carData"]["carName"]);
@@ -78,14 +78,13 @@ class CarList extends StatelessWidget {
       if (carModels.indexOf(temp[i]["data"]["carData"]["modelNo"]) == -1)
         carModels.add(temp[i]["data"]["carData"]["modelNo"]);
     }
-    // print(carModels);
 
     return temp;
   }
 
-  void _updateCarDetails(BuildContext context, int index, String carName) {
+  void _updateCarDetails(BuildContext context, int index, String carParameter) {
     Provider.of<CarDetailsProvider>(context, listen: false)
-        .updateCarDetails(index, carName);
+        .updateCarDetails(index, carParameter);
   }
 
   @override
