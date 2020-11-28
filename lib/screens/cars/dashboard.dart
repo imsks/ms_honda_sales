@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:ms_honda_sales/models/cars.dart';
 import 'package:ms_honda_sales/utilities/constants/styles.dart';
@@ -56,6 +57,9 @@ class CarList extends StatelessWidget {
   // 3. Store Car Models
   final List<String> carModels = <String>[];
 
+  // 3. Store Car Models
+  final List<String> carTypes = <String>[];
+
   final List<String> carPhotos = <String>[
     'https://imgd.aeplcdn.com/0x0/n/cw/ec/33276/amaze-exterior-right-front-three-quarter.jpeg',
     'https://imgd.aeplcdn.com/0x0/n/cw/ec/33276/amaze-exterior-right-front-three-quarter.jpeg',
@@ -106,8 +110,9 @@ class CarList extends StatelessWidget {
                           _updateCarDetails(context, 0, carNames[index]);
                           Navigator.push(
                             context,
-                            MaterialPageRoute(
-                              builder: (context) => ChooseCarModel(
+                            PageTransition(
+                              type: PageTransitionType.rightToLeft,
+                              child: ChooseCarModel(
                                 carName: carNames[index],
                                 carModels: carModels,
                               ),

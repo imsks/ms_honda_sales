@@ -5,6 +5,7 @@ import 'package:ms_honda_sales/utilities/constants/styles.dart';
 import 'package:ms_honda_sales/utilities/globalConstants.dart';
 import 'package:ms_honda_sales/utilities/styles/size_config.dart';
 import 'package:ms_honda_sales/components/navbar.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 
 class ChooseCarModel extends StatelessWidget {
@@ -156,8 +157,7 @@ class _CarDetailDropdownsState extends State<CarDetailDropdowns> {
               onPressed: () => {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) => CarDetails(),
+                  PageTransition(type: PageTransitionType.rightToLeft, child: CarDetails(),
                   ),
                 )
               },

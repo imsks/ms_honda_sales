@@ -6,6 +6,7 @@ import 'package:ms_honda_sales/services/wrapper.dart';
 import 'package:ms_honda_sales/utilities/globalConstants.dart';
 import 'package:ms_honda_sales/utilities/styles/size_config.dart';
 import 'package:ms_honda_sales/utilities/constants/styles.dart';
+import 'package:page_transition/page_transition.dart';
 
 class SignupScreen extends StatefulWidget {
   static const String id = 'loginScreen';
@@ -27,7 +28,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
         Navigator.pop(context);
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => Wrapper()));
+            context, PageTransition(type: PageTransitionType.fade, child: Wrapper()));
       } catch (e) {
         print(e);
       }
