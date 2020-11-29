@@ -57,14 +57,8 @@ class CarList extends StatelessWidget {
   // 3. Store Car Models
   final List<String> carModels = <String>[];
 
-  // 3. Store Car Models
+  // 3. Store Car Type
   final List<String> carTypes = <String>[];
-
-  final List<String> carPhotos = <String>[
-    'https://imgd.aeplcdn.com/0x0/n/cw/ec/33276/amaze-exterior-right-front-three-quarter.jpeg',
-    'https://imgd.aeplcdn.com/0x0/n/cw/ec/33276/amaze-exterior-right-front-three-quarter.jpeg',
-    'https://imgd.aeplcdn.com/0x0/n/cw/ec/33276/amaze-exterior-right-front-three-quarter.jpeg',
-  ];
 
   CarService carService = CarService();
 
@@ -120,29 +114,15 @@ class CarList extends StatelessWidget {
                           );
                         },
                         child: Container(
-                          // width: 50 * SizeConfig.heightMultiplier,
-                          height: 35 * SizeConfig.heightMultiplier,
-                          child: Column(
-                            children: [
-                              Image.network(
-                                carPhotos[index],
-                                height: 25 * SizeConfig.heightMultiplier,
-                                // width: double.infinity,
-                                fit: BoxFit.fill,
-                              ),
-                              Container(
-                                height: 10 * SizeConfig.heightMultiplier,
-                                width: double.infinity,
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 5,
-                                  vertical: 10,
-                                ),
-                                child: Center(
-                                  child: Text(carNames[index],
-                                      style: AppTheme.dashboardCarHeading),
-                                ),
-                              )
-                            ],
+                          height: 20 * SizeConfig.heightMultiplier,
+                          width: double.infinity,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 5,
+                            vertical: 10,
+                          ),
+                          child: Center(
+                            child: Text(carNames[index],
+                                style: AppTheme.dashboardCarHeading),
                           ),
                         ),
                       ),
