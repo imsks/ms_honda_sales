@@ -38,14 +38,17 @@ class CarDetails extends StatelessWidget {
                     Text(
                       carDetails[0],
                       style: AppTheme.carDetailsHeaderParamsText,
+                      overflow: TextOverflow.ellipsis,
                     ),
                     Text(
                       carDetails[1],
                       style: AppTheme.carDetailsHeaderParamsText,
+                      overflow: TextOverflow.ellipsis,
                     ),
                     Text(
                       carDetails[2],
                       style: AppTheme.carDetailsHeaderParamsText,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),

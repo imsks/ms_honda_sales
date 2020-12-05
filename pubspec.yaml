@@ -32,6 +32,7 @@ dependencies:
   shared_preferences: ^0.5.12
   http: ^0.12.2
   pdf: ^1.5.0
+  toast: ^0.1.5
   printing: ^3.7.1
   page_transition: 1.1.7+2 
 

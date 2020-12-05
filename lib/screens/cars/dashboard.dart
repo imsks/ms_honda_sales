@@ -60,17 +60,28 @@ class CarList extends StatelessWidget {
   // 3. Store Car Type
   final List<String> carTypes = <String>[];
 
+  final List<String> carImages = <String>[];
+
   CarService carService = CarService();
 
   getAllCarsData() async {
     final temp = await carService.getAllCarsData();
     for (int i = 0; i < temp.length; i++) {
+      print(temp[i]["data"]["carData"]);
       // Set Car Names
       if (carNames.indexOf(temp[i]["data"]["carData"]["carName"]) == -1)
         carNames.add(temp[i]["data"]["carData"]["carName"]);
       // Set Car Models
       if (carModels.indexOf(temp[i]["data"]["carData"]["modelNo"]) == -1)
         carModels.add(temp[i]["data"]["carData"]["modelNo"]);
+
+      if (temp[i]["data"]["carData"]["carImage"] != null) {
+        carImages.add(temp[i]["data"]["carData"]["carImage"]);
+      } else {
+        // print(carImages);
+        carImages.add(
+            'https://imgd.aeplcdn.com/0x0/n/cw/ec/33276/amaze-exterior-right-front-three-quarter.jpeg');
+      }
     }
 
     return temp;
@@ -114,15 +125,29 @@ class CarList extends StatelessWidget {
                           );
                         },
                         child: Container(
-                          height: 20 * SizeConfig.heightMultiplier,
-                          width: double.infinity,
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 5,
-                            vertical: 10,
-                          ),
-                          child: Center(
-                            child: Text(carNames[index],
-                                style: AppTheme.dashboardCarHeading),
+                          // width: 50 * SizeConfig.heightMultiplier,
+                          height: 35 * SizeConfig.heightMultiplier,
+                          child: Column(
+                            children: [
+                              Image.network(
+                                carImages[index],
+                                height: 25 * SizeConfig.heightMultiplier,
+                                width: double.infinity,
+                                fit: BoxFit.fill,
+                              ),
+                              Container(
+                                height: 10 * SizeConfig.heightMultiplier,
+                                width: double.infinity,
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 5,
+                                  vertical: 10,
+                                ),
+                                child: Center(
+                                  child: Text(carNames[index],
+                                      style: AppTheme.dashboardCarHeading),
+                                ),
+                              )
+                            ],
                           ),
                         ),
                       ),

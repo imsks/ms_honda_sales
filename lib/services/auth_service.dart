@@ -22,7 +22,7 @@ class AuthService {
     }
     // Else Login Fails
     else {
-      throw Exception("Credentials incorrect");
+      throw Exception(jsonDecode(response.body)["message"]);
     }
   }
 
@@ -41,7 +41,7 @@ class AuthService {
     }
     // Else Login Fails
     else {
-      throw Exception("Credentials incorrect");
+      throw Exception(jsonDecode(response.body)["message"]);
     }
   }
 }

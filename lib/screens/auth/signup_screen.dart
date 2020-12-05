@@ -7,6 +7,7 @@ import 'package:ms_honda_sales/utilities/globalConstants.dart';
 import 'package:ms_honda_sales/utilities/styles/size_config.dart';
 import 'package:ms_honda_sales/utilities/constants/styles.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:toast/toast.dart';
 
 class SignupScreen extends StatefulWidget {
   static const String id = 'loginScreen';
@@ -27,10 +28,14 @@ class _SignupScreenState extends State<SignupScreen> {
         await auth.signup(userName, password);
 
         Navigator.pop(context);
-        Navigator.push(
-            context, PageTransition(type: PageTransitionType.fade, child: Wrapper()));
+        Navigator.push(context,
+            PageTransition(type: PageTransitionType.fade, child: Wrapper()));
       } catch (e) {
-        print(e);
+        Toast.show(e.message, context,
+            duration: Toast.LENGTH_SHORT,
+            gravity: Toast.BOTTOM,
+            textColor: Colors.white,
+            backgroundColor: Colors.black38);
       }
     }
   }
