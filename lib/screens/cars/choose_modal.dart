@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ms_honda_sales/models/cars.dart';
+import 'package:ms_honda_sales/models/prospect.dart';
 import 'package:ms_honda_sales/screens/cars/car_details.dart';
 import 'package:ms_honda_sales/utilities/constants/styles.dart';
 import 'package:ms_honda_sales/utilities/globalConstants.dart';
@@ -11,12 +12,29 @@ import 'package:provider/provider.dart';
 class ChooseCarModel extends StatelessWidget {
   final String carName;
   final List<String> carModels;
+  final List<Map<String, dynamic>> addOnsData;
 
-  const ChooseCarModel({Key key, this.carName, this.carModels})
+  const ChooseCarModel({Key key, this.carName, this.carModels, this.addOnsData})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    Map addOnData = Map<String, dynamic>();
+    addOnsData.forEach((element) {
+      if (element[carName] != null) {
+        addOnData = element[carName];
+      }
+    });
+
+    // Define list for Name and values of add-ons
+    List<String> addOnNames = <String>[];
+    List<String> addOnValues = <String>[];
+
+    addOnData.forEach((key, value) {
+      addOnNames.add(value["addOnName"]);
+      addOnValues.add(value["addOnValue"]);
+    });
+
     return Scaffold(
       appBar: globalAppBar,
       backgroundColor: kBackgroundColor,
@@ -46,7 +64,11 @@ class ChooseCarModel extends StatelessWidget {
                 ],
               ),
             ),
-            CarDetailDropdowns(carModels: carModels),
+            CarDetailDropdowns(
+              carModels: carModels,
+              addOnNames: addOnNames,
+              addOnValues: addOnValues,
+            ),
           ],
         ),
       ),
@@ -57,7 +79,12 @@ class ChooseCarModel extends StatelessWidget {
 class CarDetailDropdowns extends StatefulWidget {
   final List<String> carModels;
 
-  const CarDetailDropdowns({Key key, this.carModels}) : super(key: key);
+  final List<String> addOnNames;
+  final List<String> addOnValues;
+
+  const CarDetailDropdowns(
+      {Key key, this.carModels, this.addOnNames, this.addOnValues})
+      : super(key: key);
 
   @override
   _CarDetailDropdownsState createState() => _CarDetailDropdownsState();
@@ -76,16 +103,33 @@ class _CarDetailDropdownsState extends State<CarDetailDropdowns> {
 
     var carDetails = Provider.of<CarDetailsProvider>(context).getCarDetails;
 
+    void _setAddOnData() {
+      Provider.of<CarDetailsProvider>(context, listen: false)
+          .setAddOnName(widget.addOnNames);
+      Provider.of<CarDetailsProvider>(context, listen: false)
+          .setAddOnValue(widget.addOnValues);
+
+      Navigator.push(
+        context,
+        PageTransition(
+          type: PageTransitionType.rightToLeft,
+          child: CarDetails(),
+        ),
+      );
+    }
+
     return Container(
       padding: EdgeInsets.symmetric(
-        horizontal: 3 * SizeConfig.heightMultiplier,
         vertical: 10,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
+            padding: EdgeInsets.symmetric(
+              horizontal: 3 * SizeConfig.heightMultiplier,
+              vertical: 10,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -117,7 +161,8 @@ class _CarDetailDropdownsState extends State<CarDetailDropdowns> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
+            padding: EdgeInsets.symmetric(
+                horizontal: 3 * SizeConfig.heightMultiplier, vertical: 10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -148,6 +193,46 @@ class _CarDetailDropdownsState extends State<CarDetailDropdowns> {
               ],
             ),
           ),
+          SizedBox(
+            height: 2 * SizeConfig.heightMultiplier,
+          ),
+          ListView.builder(
+            shrinkWrap: true,
+            itemCount: widget.addOnNames.length,
+            itemBuilder: (BuildContext context, index) {
+              return Container(
+                margin: EdgeInsets.symmetric(
+                  // horizontal: 3 * SizeConfig.heightMultiplier,
+                  vertical: 1 * SizeConfig.heightMultiplier,
+                ),
+                padding: EdgeInsets.symmetric(
+                  horizontal: 3 * SizeConfig.heightMultiplier,
+                  vertical: 2 * SizeConfig.heightMultiplier,
+                ),
+                color: kWhiteColor,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      widget.addOnNames[index],
+                      style: TextStyle(
+                        fontSize: 2.5 * SizeConfig.textMultiplier,
+                      ),
+                    ),
+                    Text(
+                      widget.addOnValues[index],
+                      style: TextStyle(
+                        fontSize: 2.5 * SizeConfig.textMultiplier,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+          SizedBox(
+            height: 3 * SizeConfig.heightMultiplier,
+          ),
           Center(
             child: RaisedButton(
               textColor: Colors.white,
@@ -155,11 +240,7 @@ class _CarDetailDropdownsState extends State<CarDetailDropdowns> {
               focusElevation: 0,
               hoverElevation: 0,
               onPressed: () => {
-                Navigator.push(
-                  context,
-                  PageTransition(type: PageTransitionType.rightToLeft, child: CarDetails(),
-                  ),
-                )
+                _setAddOnData(),
               },
               padding: EdgeInsets.symmetric(
                 horizontal: 40,

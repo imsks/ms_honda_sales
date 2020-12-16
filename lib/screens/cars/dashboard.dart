@@ -57,34 +57,45 @@ class CarList extends StatelessWidget {
   // 3. Store Car Models
   final List<String> carModels = <String>[];
 
-  // 3. Store Car Type
+  // 4. Store Car Type
   final List<String> carTypes = <String>[];
 
+  // 5. Store car images
   final List<String> carImages = <String>[];
+
+  // 6. Store car add-ons
+  List<Map<String, dynamic>> addOnsData = List<Map<String, dynamic>>();
 
   CarService carService = CarService();
 
   getAllCarsData() async {
-    final temp = await carService.getAllCarsData();
-    for (int i = 0; i < temp.length; i++) {
-      print(temp[i]["data"]["carData"]);
-      // Set Car Names
-      if (carNames.indexOf(temp[i]["data"]["carData"]["carName"]) == -1)
-        carNames.add(temp[i]["data"]["carData"]["carName"]);
-      // Set Car Models
-      if (carModels.indexOf(temp[i]["data"]["carData"]["modelNo"]) == -1)
-        carModels.add(temp[i]["data"]["carData"]["modelNo"]);
+    final carsData = await carService.getAllCarsData();
 
-      if (temp[i]["data"]["carData"]["carImage"] != null) {
-        carImages.add(temp[i]["data"]["carData"]["carImage"]);
+    for (int i = 0; i < carsData.length; i++) {
+      // Set Car Addons
+      if (carsData[i]["data"]["carData"]["addOnsData"] != null &&
+          carsData[i]["data"]["carData"]["carName"] != null) {
+        addOnsData.add({
+          carsData[i]["data"]["carData"]["carName"]: carsData[i]["data"]
+              ["carData"]["addOnsData"],
+        });
+      }
+
+      // Set Car Names
+      if (carNames.indexOf(carsData[i]["data"]["carData"]["carName"]) == -1)
+        carNames.add(carsData[i]["data"]["carData"]["carName"]);
+      // Set Car Models
+      if (carModels.indexOf(carsData[i]["data"]["carData"]["modelNo"]) == -1)
+        carModels.add(carsData[i]["data"]["carData"]["modelNo"]);
+
+      if (carsData[i]["data"]["carData"]["carImage"] != null) {
+        carImages.add(carsData[i]["data"]["carData"]["carImage"]);
       } else {
-        // print(carImages);
         carImages.add(
             'https://imgd.aeplcdn.com/0x0/n/cw/ec/33276/amaze-exterior-right-front-three-quarter.jpeg');
       }
     }
-
-    return temp;
+    return carsData;
   }
 
   void _updateCarDetails(BuildContext context, int index, String carParameter) {
@@ -120,6 +131,7 @@ class CarList extends StatelessWidget {
                               child: ChooseCarModel(
                                 carName: carNames[index],
                                 carModels: carModels,
+                                addOnsData: addOnsData,
                               ),
                             ),
                           );

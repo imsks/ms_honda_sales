@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:ms_honda_sales/screens/auth/login_screen.dart';
 import 'package:ms_honda_sales/screens/cars/dashboard.dart';
+import 'package:ms_honda_sales/screens/cars/prospect_details.dart';
 import 'package:ms_honda_sales/services/auth_service.dart';
 import 'package:ms_honda_sales/services/sharedPrefs.dart';
 
@@ -28,7 +29,7 @@ class Wrapper extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.data != null) {
           if (snapshot.data) {
-            return CarsShowcase();
+            return ProspectDetails();
           } else
             return LoginScreen();
         } else {

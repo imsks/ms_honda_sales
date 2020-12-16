@@ -19,18 +19,20 @@ class CarService {
 
   // Get All Cars Data
   getACarData(String carName, String carModel, String carType) async {
-    // carModel = carModel.replaceAll(" ", '%20');
-    // Send the response
-    final response = await http.get(
-      Uri.encodeFull(
-          'https://ms-honda-sales-app.herokuapp.com/api/admin/cars/get-car-data/$carName/$carModel/$carType'),
-    );
-    
+    try {
+      // Send the response
+      final response = await http.get(
+        Uri.encodeFull(
+            'https://ms-honda-sales-app.herokuapp.com/api/admin/cars/get-car-data/$carName/$carModel/$carType'),
+      );
 
-    if (jsonDecode(response.body)["status"] == "Success") {
-      return jsonDecode(response.body)["data"]["data"];
-    } else {
-      return jsonDecode(response.body);
+      if (jsonDecode(response.body)["status"] == "Success") {
+        return jsonDecode(response.body)["data"]["data"];
+      } else {
+        return jsonDecode(response.body);
+      }
+    } catch (err) {
+      print(err);
     }
   }
 }

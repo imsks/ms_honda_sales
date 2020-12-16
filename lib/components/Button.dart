@@ -26,9 +26,6 @@ class Button extends StatelessWidget {
       minWidth: minimumWidth,
       height: height,
       child: RaisedButton(
-        shape: RoundedRectangleBorder(
-          side: BorderSide(color: Colors.black87, width: 2),
-        ),
         child: Text(
           buttonTitle,
           style: TextStyle(

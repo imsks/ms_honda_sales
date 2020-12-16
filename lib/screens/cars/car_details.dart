@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:ms_honda_sales/screens/cars/get_quote_pdf.dart';
 import 'package:ms_honda_sales/services/sharedPrefs.dart';
 import 'package:printing/printing.dart';
 import 'package:provider/provider.dart';
@@ -9,6 +10,8 @@ import 'package:ms_honda_sales/utilities/constants/styles.dart';
 import 'package:ms_honda_sales/utilities/globalConstants.dart';
 import 'package:ms_honda_sales/utilities/styles/size_config.dart';
 import 'package:ms_honda_sales/services/cars.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
 class CarDetails extends StatelessWidget {
@@ -70,6 +73,11 @@ class CarAccesseries extends StatelessWidget {
 
     var carDetails = Provider.of<CarDetailsProvider>(context).getCarDetails;
 
+    var addOnNames = Provider.of<CarDetailsProvider>(context).getAddOnNames;
+    var addOnValues = Provider.of<CarDetailsProvider>(context).getAddOnValues;
+
+    print(addOnValues);
+
     // Define Data map
     var dataMap = Map();
 
@@ -106,22 +114,23 @@ class CarAccesseries extends StatelessWidget {
       }
 
       // Set the data getting from DB
-      featureValues.add(data["exShowRoom"]);
-      featureValues.add(data["taxCollectedAtSource"]);
-      featureValues.add(data["insuranceFor1Year"]);
-      featureValues.add(data["insuranceDifferentsAmountFor2Years"]);
-      featureValues.add(data["roadTaxAndRegistrationCharges"]);
-      featureValues.add(data["fastag"]);
-      featureValues.add(data["basicAccessoriesKit"]);
-      featureValues.add(data["extendedWarranty"]);
-      featureValues.add(data["roadSideAssistance"]);
-      featureValues.add(data["onRoadPrice"]);
-      featureValues.add(data["zeroDepPolicy"]);
-      featureValues.add(data["hydrostaticLockCoverAndKeyCost"]);
-      featureValues.add(data["returnToInvoice"]);
-      featureValues.add(data["priceToConnectedDevice"]);
-      featureValues.add(data["totalOnRoadPriceWithOptionalAddOns"]);
-      featureValues.add(data["oneYearSubscriptionOfConnectedDevices"]);
+      featureValues.add(int.parse(data["exShowRoom"]));
+      featureValues.add(int.parse(data["taxCollectedAtSource"]));
+      featureValues.add(int.parse(data["insuranceFor1Year"]));
+      featureValues.add(int.parse(data["insuranceDifferentsAmountFor2Years"]));
+      featureValues.add(int.parse(data["roadTaxAndRegistrationCharges"]));
+      featureValues.add(int.parse(data["Fastag"]));
+      featureValues.add(int.parse(data["basicAccessoriesKit"]));
+      featureValues.add(int.parse(data["extendedWarranty"]));
+      featureValues.add(int.parse(data["roadSideAssistance"]));
+      featureValues.add(int.parse(data["onRoadPrice"]));
+      featureValues.add(int.parse(data["zeroDepPolicy"]));
+      featureValues.add(int.parse(data["hydrostaticLockCoverAndKeyCost"]));
+      featureValues.add(int.parse(data["returnToInvoice"]));
+      featureValues.add(int.parse(data["priceToConnectedDevice"]));
+      featureValues.add(int.parse(data["totalOnRoadPriceWithOptionalAddOns"]));
+      featureValues
+          .add(int.parse(data["oneYearSubscriptionOfConnectedDevices"]));
 
       // Data Map
       dataMap = {
@@ -190,6 +199,25 @@ class CarAccesseries extends StatelessWidget {
                     ],
                 ],
               ),
+              // Add-Ons
+              pw.Table.fromTextArray(
+                context: context,
+                data: <List<String>>[
+                  // These will be your columns as Parameter X, Parameter Y etc.
+                  <String>[
+                    'Add-ons',
+                    'Cost',
+                  ],
+                  for (int i = 0; i < addOnNames.length; i++)
+                    <String>[
+                      // ith element will go in ith column means
+                      // featureNames[i] in 1st column
+                      addOnNames[i],
+                      // featureValues[i] in 2nd column
+                      addOnValues[i].toString(),
+                    ],
+                ],
+              ),
               pw.Footer(
                 title: pw.Text(
                   "Quoted by " +
@@ -215,6 +243,16 @@ class CarAccesseries extends StatelessWidget {
           " - " +
           carDetails[2] +
           ".pdf";
+
+      final String dir = (await getApplicationDocumentsDirectory()).path;
+      final String path = '$dir/get_quote_1.pdf';
+      final File file = File(path);
+      await file.writeAsBytes(pdf.save());
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => PdfViewerPage(path: path),
+        ),
+      );
 
       await Printing.sharePdf(bytes: pdf.save(), filename: fileName);
     }

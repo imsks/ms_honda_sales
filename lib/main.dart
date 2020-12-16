@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ms_honda_sales/models/prospect.dart';
 import 'package:provider/provider.dart';
 import 'package:ms_honda_sales/models/cars.dart';
 import 'package:ms_honda_sales/screens/static/splash_screen.dart';
@@ -19,6 +20,9 @@ class MSHondaSales extends StatelessWidget {
       providers: [
         ChangeNotifierProvider.value(
           value: CarDetailsProvider(),
+        ),
+        ChangeNotifierProvider.value(
+          value: ProspectDataProvider(),
         ),
       ],
       child: MaterialApp(
