@@ -234,7 +234,7 @@ class _CarDetailDropdownsState extends State<CarDetailDropdowns> {
                   horizontal: 3 * SizeConfig.heightMultiplier,
                   vertical: 2 * SizeConfig.heightMultiplier,
                 ),
-                color: kWhiteColor,
+                color: kPrimaryColor,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -242,12 +242,14 @@ class _CarDetailDropdownsState extends State<CarDetailDropdowns> {
                       widget.addOnNames[index],
                       style: TextStyle(
                         fontSize: 2.5 * SizeConfig.textMultiplier,
+                        color: kWhiteColor
                       ),
                     ),
                     Text(
                       widget.addOnValues[index],
                       style: TextStyle(
                         fontSize: 2.5 * SizeConfig.textMultiplier,
+                        color: kWhiteColor
                       ),
                     ),
                   ],

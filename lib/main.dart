@@ -28,6 +28,7 @@ class MSHondaSales extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
+          primaryColor: kPrimaryColor,
           fontFamily: kFontFamily,
           visualDensity: VisualDensity.adaptivePlatformDensity,
           backgroundColor: Colors.white,

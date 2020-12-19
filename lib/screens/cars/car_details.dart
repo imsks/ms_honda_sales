@@ -36,7 +36,7 @@ class CarDetails extends StatelessWidget {
               // Header
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 0, vertical: 30),
-                color: Colors.black,
+                color: kPrimaryColor,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.baseline,

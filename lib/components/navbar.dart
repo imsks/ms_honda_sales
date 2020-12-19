@@ -37,5 +37,5 @@ final AppBar globalAppBar = AppBar(
           }
         }),
   ],
-  backgroundColor: kBlackColor,
+  backgroundColor: kPrimaryColor,
 );

@@ -6,13 +6,13 @@ class AppTheme {
   //  SplashScreen Styling
 
   static final TextStyle splashScreenAppName = TextStyle(
-    color: kBlackColor,
+    color: kPrimaryColor,
     fontSize: 4 * SizeConfig.textMultiplier,
     fontWeight: FontWeight.w600,
     letterSpacing: 1.0,
   );
   static final TextStyle splashScreenTagLine = TextStyle(
-    color: kBlackColor,
+    color: kPrimaryColor,
     fontSize: 1.8 * SizeConfig.textMultiplier,
     fontWeight: FontWeight.w400,
     letterSpacing: 0.5,
@@ -41,7 +41,7 @@ class AppTheme {
   // Choose Car Model Screen
   static final TextStyle chooseCarModelHeaderHeading = TextStyle(
     fontSize: 3.5 * SizeConfig.textMultiplier,
-    color: kBlackColor,
+    color: kPrimaryColor,
     fontWeight: FontWeight.w500,
   );
 
