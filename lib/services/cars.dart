@@ -35,4 +35,34 @@ class CarService {
       print(err);
     }
   }
+
+  // Send Quote Data
+  Future sendQuote(
+      userName, prospectDetails, carDetails, isAddOnsIncluded) async {
+    Map data = {
+      "data": {
+        'userName': userName,
+        'prospectDetails': prospectDetails,
+        "carDetails": carDetails,
+        "isAddOnsIncluded": isAddOnsIncluded
+      }
+    };
+
+    print(jsonEncode(data));
+    final response = await http.post(
+        Uri.encodeFull(
+            "https://ms-honda-sales-app.herokuapp.com/api/user/quote/set-quote-for-customer"),
+        body: jsonEncode(data),
+        headers: {"Content-Type": "application/json"});
+
+    // If Login success
+    if (response.statusCode == 200) {
+      print(jsonDecode(response.body));
+      return true;
+    }
+    // Else Login Fails
+    else {
+      throw Exception(jsonDecode(response.body)["message"]);
+    }
+  }
 }

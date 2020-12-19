@@ -6,6 +6,7 @@ class CarDetailsProvider with ChangeNotifier {
 
   List<String> addOnNames = [];
   List<String> addOnValues = [];
+  bool isAddOnsIncluded = false;
 
   List<String> get getCarDetails {
     return currentCarDetails;
@@ -17,6 +18,10 @@ class CarDetailsProvider with ChangeNotifier {
 
   List<String> get getAddOnValues {
     return addOnValues;
+  }
+
+  bool get getAddOnIncludeStatus {
+    return isAddOnsIncluded;
   }
 
   void updateCarDetails(num index, String data) {
@@ -32,6 +37,11 @@ class CarDetailsProvider with ChangeNotifier {
 
   void setAddOnValue(List<String> data) {
     addOnValues = data;
+    notifyListeners();
+  }
+
+  void setAddOnIncludedStatus(bool value) {
+    isAddOnsIncluded = value;
     notifyListeners();
   }
 }

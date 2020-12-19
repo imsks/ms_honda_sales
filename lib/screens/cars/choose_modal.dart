@@ -38,38 +38,40 @@ class ChooseCarModel extends StatelessWidget {
     return Scaffold(
       appBar: globalAppBar,
       backgroundColor: kBackgroundColor,
-      body: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: 3 * SizeConfig.heightMultiplier,
-          vertical: 5 * SizeConfig.heightMultiplier,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header
-            Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: 3 * SizeConfig.heightMultiplier, vertical: 8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "You're viewing",
-                    style: AppTheme.chooseCarModelHeaderSubheading,
-                  ),
-                  Text(
-                    carName,
-                    style: AppTheme.chooseCarModelHeaderHeading,
-                  ),
-                ],
+      body: SingleChildScrollView(
+        child: Container(
+          padding: EdgeInsets.symmetric(
+            horizontal: 3 * SizeConfig.heightMultiplier,
+            vertical: 5 * SizeConfig.heightMultiplier,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header
+              Padding(
+                padding: EdgeInsets.symmetric(
+                    horizontal: 3 * SizeConfig.heightMultiplier, vertical: 8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "You're viewing",
+                      style: AppTheme.chooseCarModelHeaderSubheading,
+                    ),
+                    Text(
+                      carName,
+                      style: AppTheme.chooseCarModelHeaderHeading,
+                    ),
+                  ],
+                ),
               ),
-            ),
-            CarDetailDropdowns(
-              carModels: carModels,
-              addOnNames: addOnNames,
-              addOnValues: addOnValues,
-            ),
-          ],
+              CarDetailDropdowns(
+                carModels: carModels,
+                addOnNames: addOnNames,
+                addOnValues: addOnValues,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -96,6 +98,8 @@ class _CarDetailDropdownsState extends State<CarDetailDropdowns> {
         .updateCarDetails(index, carType);
   }
 
+  bool checkedValue = false;
+
   @override
   Widget build(BuildContext context) {
     String carType = '';
@@ -108,6 +112,8 @@ class _CarDetailDropdownsState extends State<CarDetailDropdowns> {
           .setAddOnName(widget.addOnNames);
       Provider.of<CarDetailsProvider>(context, listen: false)
           .setAddOnValue(widget.addOnValues);
+      Provider.of<CarDetailsProvider>(context, listen: false)
+          .setAddOnIncludedStatus(checkedValue);
 
       Navigator.push(
         context,
@@ -196,6 +202,25 @@ class _CarDetailDropdownsState extends State<CarDetailDropdowns> {
           SizedBox(
             height: 2 * SizeConfig.heightMultiplier,
           ),
+          widget.addOnNames.length > 0
+              ? CheckboxListTile(
+                  title: Text("Include Add-ons"),
+                  value: checkedValue,
+                  onChanged: (newValue) {
+                    setState(() {
+                      checkedValue = newValue;
+                    });
+                  },
+                  controlAffinity:
+                      ListTileControlAffinity.leading, //  <-- leading Checkbox
+                )
+              : Center(
+                child: Container(
+                  child: Text(
+                    "No add-ons available"
+                  ),
+                ),
+              ),
           ListView.builder(
             shrinkWrap: true,
             itemCount: widget.addOnNames.length,

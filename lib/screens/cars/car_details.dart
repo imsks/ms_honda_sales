@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:ms_honda_sales/models/prospect.dart';
 import 'package:ms_honda_sales/screens/cars/get_quote_pdf.dart';
+import 'package:ms_honda_sales/screens/cars/prospect_details.dart';
 import 'package:ms_honda_sales/services/sharedPrefs.dart';
 import 'package:printing/printing.dart';
 import 'package:provider/provider.dart';
@@ -13,6 +15,7 @@ import 'package:ms_honda_sales/services/cars.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
+import 'package:toast/toast.dart';
 
 class CarDetails extends StatelessWidget {
   @override
@@ -75,8 +78,13 @@ class CarAccesseries extends StatelessWidget {
 
     var addOnNames = Provider.of<CarDetailsProvider>(context).getAddOnNames;
     var addOnValues = Provider.of<CarDetailsProvider>(context).getAddOnValues;
+    var isAddOnsIncluded =
+        Provider.of<CarDetailsProvider>(context).getAddOnIncludeStatus;
 
-    print(addOnValues);
+    var userDetails =
+        Provider.of<ProspectDataProvider>(context).getProspectData;
+
+    print(isAddOnsIncluded);
 
     // Define Data map
     var dataMap = Map();
@@ -128,9 +136,9 @@ class CarAccesseries extends StatelessWidget {
       featureValues.add(int.parse(data["hydrostaticLockCoverAndKeyCost"]));
       featureValues.add(int.parse(data["returnToInvoice"]));
       featureValues.add(int.parse(data["priceToConnectedDevice"]));
-      featureValues.add(int.parse(data["totalOnRoadPriceWithOptionalAddOns"]));
       featureValues
           .add(int.parse(data["oneYearSubscriptionOfConnectedDevices"]));
+      featureValues.add(int.parse(data["totalOnRoadPriceWithOptionalAddOns"]));
 
       // Data Map
       dataMap = {
@@ -150,10 +158,10 @@ class CarAccesseries extends StatelessWidget {
             data["hydrostaticLockCoverAndKeyCost"],
         "Return To Invoice": data["exShowRoom"],
         "Price To Connected Device": data["returnToInvoice"],
-        "Total On Road Price With Optional Add-Ons":
-            data["totalOnRoadPriceWithOptionalAddOns"],
         "One Year Subscription Of Connected Devices":
             data["oneYearSubscriptionOfConnectedDevices"],
+        "Total On Road Price With Optional Add-Ons":
+            data["totalOnRoadPriceWithOptionalAddOns"],
       };
       return data;
     }
@@ -163,74 +171,92 @@ class CarAccesseries extends StatelessWidget {
       // Get User Details
       SharedPref sharedPref = SharedPref();
       var data = await sharedPref.read("user");
-// data["userName"]
+
       // Defining PDF setup
       final pw.Document pdf = pw.Document(deflate: zlib.encode);
       pdf.addPage(
         pw.MultiPage(
           build: (context) {
             return <pw.Widget>[
-              pw.Header(
-                level: 0,
-                child: pw.Text(
-                  "Car Details - " +
-                      carDetails[0] +
-                      " - " +
-                      carDetails[1] +
-                      " - " +
-                      carDetails[2],
+              pw.Container(
+                margin: const pw.EdgeInsets.all(15.0),
+                padding: const pw.EdgeInsets.all(3.0),
+                decoration: pw.BoxDecoration(
+                  border: pw.BoxBorder(
+                    top: true,
+                    color: PdfColors.black,
+                  ),
                 ),
+                child: _contentHeader(context),
               ),
-              pw.Table.fromTextArray(
-                context: context,
-                data: <List<String>>[
-                  // These will be your columns as Parameter X, Parameter Y etc.
-                  <String>[
-                    'Parameter',
-                    'Price',
-                  ],
-                  for (int i = 0; i < featureNames.length; i++)
-                    <String>[
-                      // ith element will go in ith column means
-                      // featureNames[i] in 1st column
-                      featureNames[i],
-                      // featureValues[i] in 2nd column
-                      featureValues[i].toString(),
-                    ],
-                ],
-              ),
-              // Add-Ons
-              pw.Table.fromTextArray(
-                context: context,
-                data: <List<String>>[
-                  // These will be your columns as Parameter X, Parameter Y etc.
-                  <String>[
-                    'Add-ons',
-                    'Cost',
-                  ],
-                  for (int i = 0; i < addOnNames.length; i++)
-                    <String>[
-                      // ith element will go in ith column means
-                      // featureNames[i] in 1st column
-                      addOnNames[i],
-                      // featureValues[i] in 2nd column
-                      addOnValues[i].toString(),
-                    ],
-                ],
-              ),
-              pw.Footer(
-                title: pw.Text(
-                  "Quoted by " +
-                      data["userName"] +
-                      " at " +
-                      DateTime.parse(DateTime.now().toString()).day.toString() +
-                      " " +
-                      DateTime.parse(DateTime.now().toString())
-                          .month
-                          .toString() +
-                      " " +
-                      DateTime.parse(DateTime.now().toString()).year.toString(),
+              userDetails.length > 0
+                  ? pw.Container(
+                      margin: const pw.EdgeInsets.all(15.0),
+                      padding: const pw.EdgeInsets.all(3.0),
+                      decoration: pw.BoxDecoration(
+                        border: pw.BoxBorder(
+                          top: true,
+                          color: PdfColors.black,
+                        ),
+                      ),
+                      child: _contentUser(
+                          context, data["userName"], userDetails[0]["name"]),
+                    )
+                  : pw.Container(),
+              pw.Container(
+                margin: const pw.EdgeInsets.all(15.0),
+                padding: const pw.EdgeInsets.all(3.0),
+                decoration: pw.BoxDecoration(
+                  border: pw.BoxBorder(
+                    top: true,
+                    color: PdfColors.black,
+                  ),
                 ),
+                child: _contentBaseCarDetails(context, carDetails),
+              ),
+              pw.Container(
+                decoration: pw.BoxDecoration(
+                  border: pw.BoxBorder(
+                    top: true,
+                    color: PdfColors.black,
+                  ),
+                ),
+                child: _contentMainCarDetails(
+                    context, featureNames, featureValues),
+              ),
+              isAddOnsIncluded
+                  ? pw.Container(
+                      decoration: pw.BoxDecoration(
+                        border: pw.BoxBorder(
+                          top: true,
+                          color: PdfColors.black,
+                        ),
+                      ),
+                      child: _contentAddOnCarDetails(
+                          context, addOnNames, addOnValues),
+                    )
+                  : pw.Container(),
+              pw.Container(
+                margin: const pw.EdgeInsets.all(15.0),
+                padding: const pw.EdgeInsets.all(3.0),
+                decoration: pw.BoxDecoration(
+                  border: pw.BoxBorder(
+                    top: true,
+                    color: PdfColors.black,
+                  ),
+                ),
+                child: _contentTermsAndConditions(context),
+              ),
+              pw.Container(
+                margin: const pw.EdgeInsets.all(15.0),
+                padding: const pw.EdgeInsets.all(3.0),
+                decoration: pw.BoxDecoration(
+                  border: pw.BoxBorder(
+                    top: true,
+                    color: PdfColors.black,
+                  ),
+                ),
+                child: _contentRTGSDetails(context),
               ),
             ];
           },
@@ -248,13 +274,18 @@ class CarAccesseries extends StatelessWidget {
       final String path = '$dir/get_quote_1.pdf';
       final File file = File(path);
       await file.writeAsBytes(pdf.save());
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (_) => PdfViewerPage(path: path),
-        ),
-      );
 
       await Printing.sharePdf(bytes: pdf.save(), filename: fileName);
+      CarService carService = new CarService();
+      var isQuoteAdded = await carService.sendQuote(
+          data["userName"], userDetails, carDetails, isAddOnsIncluded);
+      if (isQuoteAdded) {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => ProspectDetails(),
+          ),
+        );
+      }
     }
 
     return FutureBuilder(
@@ -337,4 +368,194 @@ class CarAccesseries extends StatelessWidget {
       },
     );
   }
+}
+
+pw.Widget _contentHeader(pw.Context context) {
+  return pw.Container(
+    child: pw.Row(
+      mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+      children: [
+        pw.Column(
+          crossAxisAlignment: pw.CrossAxisAlignment.start,
+          children: [
+            pw.Text(
+              "M/S MAANSAROVAR AUTOMOBILE PVT LTD",
+            ),
+            pw.Text(
+              "NO.15 Arcot Road,",
+            ),
+            pw.Text(
+              "Porur, Chennai-600116",
+            ),
+            pw.Text(
+              "Phone Number-044 4942 8920",
+            ),
+            pw.Text(
+              "Mail ID: rfm@maansarovarhonda.in",
+            ),
+          ],
+        ),
+        pw.Text(
+          "HONDA",
+          style: pw.TextStyle(
+              color: PdfColors.red,
+              fontSize: 50,
+              fontWeight: pw.FontWeight.bold),
+        )
+      ],
+    ),
+  );
+}
+
+pw.Widget _contentUser(pw.Context context, String userName, String prospect) {
+  return pw.Container(
+    child: pw.Row(
+      mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+      children: [
+        pw.Column(
+          crossAxisAlignment: pw.CrossAxisAlignment.start,
+          children: [
+            pw.Text(
+              prospect,
+            ),
+          ],
+        ),
+        pw.Column(
+          crossAxisAlignment: pw.CrossAxisAlignment.start,
+          children: [
+            pw.Text(
+              "Quoted By",
+            ),
+            pw.Text(userName),
+          ],
+        ),
+      ],
+    ),
+  );
+}
+
+pw.Widget _contentBaseCarDetails(pw.Context context, List<String> carDetails) {
+  return pw.Container(
+    child: pw.RichText(
+      text: pw.TextSpan(
+        style: pw.TextStyle(
+          fontWeight: pw.FontWeight.bold,
+          fontSize: 2 * SizeConfig.textMultiplier,
+        ),
+        children: [
+          pw.TextSpan(
+            text: "Proforma Invoice for ",
+            style: pw.TextStyle(
+              color: PdfColors.black,
+            ),
+          ),
+          pw.TextSpan(
+            text: carDetails[0] + " ",
+            style: pw.TextStyle(
+              color: PdfColors.black,
+            ),
+          ),
+          pw.TextSpan(
+            text: carDetails[1] + " ",
+            style: pw.TextStyle(
+              color: PdfColors.black,
+            ),
+          ),
+          pw.TextSpan(
+            text: carDetails[2] + " ",
+            style: pw.TextStyle(
+              color: PdfColors.black,
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+pw.Widget _contentMainCarDetails(
+    pw.Context context, List<String> featureNames, List<int> featureValues) {
+  return pw.Table.fromTextArray(
+    context: context,
+    data: <List<String>>[
+      // These will be your columns as Parameter X, Parameter Y etc.
+      <String>[
+        'Parameter',
+        'Price',
+      ],
+      for (int i = 0; i < featureNames.length; i++)
+        <String>[
+          // ith element will go in ith column means
+          // featureNames[i] in 1st column
+          featureNames[i],
+          // featureValues[i] in 2nd column
+          featureValues[i].toString(),
+        ],
+    ],
+  );
+}
+
+pw.Widget _contentAddOnCarDetails(
+    pw.Context context, List<String> featureNames, List<String> featureValues) {
+  return pw.Table.fromTextArray(
+    context: context,
+    data: <List<String>>[
+      // These will be your columns as Parameter X, Parameter Y etc.
+      <String>[
+        'Add On',
+        'Cost',
+      ],
+      for (int i = 0; i < featureNames.length; i++)
+        <String>[
+          // ith element will go in ith column means
+          // featureNames[i] in 1st column
+          featureNames[i],
+          // featureValues[i] in 2nd column
+          featureValues[i].toString(),
+        ],
+    ],
+  );
+}
+
+pw.Widget _contentTermsAndConditions(pw.Context context) {
+  return pw.Column(children: [
+    pw.Text(
+      "Terms And Conditions",
+      style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 20),
+    ),
+    pw.Text(
+      "Payment favouring M/s Maansarovar Automobile Pvt Ltd, through Cheque /Pay Order/ Demand Draft payable at Chennai./ Tentative delivery of vehicle 1 week from the date of receipt of firm Order with full payment / Vehicle specification and Price will be as applicable at the time of Delivery, if whatever discount value mentioned it will be deduct in Ex-showroom price ( Tax Invoice ) only. Cars will be delivered only after realization of cheques /DD/Pay order / Deliveries are subjected to Force Majeure and all disputes are subjected to jurisdiction of Chennai / Cars will be delivered only after registration. The Price ruling at the time of delivery is applicable.",
+    ),
+  ]);
+}
+
+pw.Widget _contentRTGSDetails(pw.Context context) {
+  return pw.Column(
+    mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
+    crossAxisAlignment: pw.CrossAxisAlignment.start,
+    children: [
+      pw.Text(
+        "RTGS DETAILS",
+        style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 20),
+      ),
+      pw.Text(
+        "Company Name : Maansarovar Automobile Pvt Ltd",
+      ),
+      pw.Text(
+        "Bank Name : HDFC - Porur Branch",
+      ),
+      pw.Text(
+        "Account Number : 50200013228904",
+      ),
+      pw.Text(
+        "IFSC Code : HDFC0000390",
+      ),
+      pw.Text(
+        "GST No : 33AAMCS5553P1ZO",
+      ),
+      pw.Text(
+        "Tin No : 33806279674",
+      ),
+    ],
+  );
 }
