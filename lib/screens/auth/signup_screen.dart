@@ -18,6 +18,8 @@ class SignupScreen extends StatefulWidget {
 class _SignupScreenState extends State<SignupScreen> {
   String userName = "";
   String password = "";
+  bool isSubmitClicked = false;
+
   final loginController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   AuthService auth = new AuthService();
@@ -31,6 +33,9 @@ class _SignupScreenState extends State<SignupScreen> {
         Navigator.push(context,
             PageTransition(type: PageTransitionType.fade, child: Wrapper()));
       } catch (e) {
+        setState(() {
+          isSubmitClicked = false;
+        });
         Toast.show(e.message, context,
             duration: Toast.LENGTH_SHORT,
             gravity: Toast.BOTTOM,
@@ -145,13 +150,16 @@ class _SignupScreenState extends State<SignupScreen> {
                   ),
                   Center(
                     child: Button(
-                      buttonTitle: "Sign up",
-                      buttonColor: kBlackColor,
+                      buttonTitle: isSubmitClicked ? "Sign up" : "Signing up",
+                      buttonColor: Colors.grey,
                       buttonTextColor: Colors.white,
                       buttonTextSize: 3.2 * SizeConfig.heightMultiplier,
                       minimumWidth: 33 * SizeConfig.heightMultiplier,
                       height: 6.9 * SizeConfig.heightMultiplier,
                       onPressed: () async {
+                        setState(() {
+                          isSubmitClicked = true;
+                        });
                         try {
                           await _submitform();
                         } catch (e) {

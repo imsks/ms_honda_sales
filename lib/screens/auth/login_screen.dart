@@ -20,6 +20,8 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   String userName = "";
   String password = "";
+  bool isSubmitClicked = false;
+
   final loginController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   AuthService auth = new AuthService();
@@ -27,15 +29,14 @@ class _LoginScreenState extends State<LoginScreen> {
   Future _submitform() async {
     if (_formKey.currentState.validate()) {
       try {
-        // var sharedPref = SharedPref();
-        // sharedPref.save('user', 123);
-
         await auth.login(userName, password);
-
         Navigator.pop(context);
         Navigator.push(context,
             PageTransition(type: PageTransitionType.fade, child: Wrapper()));
       } catch (e) {
+        setState(() {
+          isSubmitClicked = false;
+        });
         Toast.show(e.message, context,
             duration: Toast.LENGTH_SHORT,
             gravity: Toast.BOTTOM,
@@ -151,13 +152,16 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   Center(
                     child: Button(
-                      buttonTitle: "Log In",
-                      buttonColor: kBlackColor,
+                      buttonTitle: isSubmitClicked ? "Log in" : "Logging in",
+                      buttonColor: Colors.grey,
                       buttonTextColor: Colors.white,
                       buttonTextSize: 3.2 * SizeConfig.heightMultiplier,
                       minimumWidth: 33 * SizeConfig.heightMultiplier,
                       height: 6.9 * SizeConfig.heightMultiplier,
                       onPressed: () async {
+                        setState(() {
+                          isSubmitClicked = true;
+                        });
                         try {
                           await _submitform();
                         } catch (e) {
@@ -175,7 +179,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       "OR",
                       style: TextStyle(
                         fontSize: 2 * SizeConfig.heightMultiplier,
-                        color: kBlackColor,
+                        color: Colors.grey,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -186,7 +190,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   Center(
                     child: Button(
                       buttonTitle: "Sign up",
-                      buttonColor: kBlackColor,
+                      buttonColor: Colors.grey,
                       buttonTextColor: Colors.white,
                       buttonTextSize: 3.2 * SizeConfig.heightMultiplier,
                       minimumWidth: 33 * SizeConfig.heightMultiplier,

@@ -87,7 +87,7 @@ class AppTheme {
   static final InputDecoration inputTextFieldDecoration = InputDecoration(
     errorStyle: TextStyle(fontSize: 2 * SizeConfig.textMultiplier),
     hintStyle: TextStyle(
-      color: Colors.black87,
+      color: kPrimaryColor,
       fontSize: 2.5 * SizeConfig.textMultiplier,
     ),
     hintText: '',
@@ -96,16 +96,16 @@ class AppTheme {
       borderRadius: BorderRadius.all(Radius.circular(5.0)),
     ),
     enabledBorder: OutlineInputBorder(
-      borderSide: BorderSide(color: Colors.black87, width: 1.0),
+      borderSide: BorderSide(color: kPrimaryColor, width: 1.0),
       borderRadius: BorderRadius.all(Radius.circular(5.0)),
     ),
     focusedBorder: OutlineInputBorder(
-      borderSide: BorderSide(color: Colors.black87, width: 2),
+      borderSide: BorderSide(color: kPrimaryColor, width: 2),
       borderRadius: BorderRadius.all(Radius.circular(5.0)),
     ),
   );
   static final TextStyle inputTextStyle = TextStyle(
-    color: kBlackColor,
+    color: kPrimaryColor,
     fontSize: 2 * SizeConfig.textMultiplier,
   );
   static final BoxDecoration dropDownBox = BoxDecoration(

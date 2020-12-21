@@ -48,7 +48,6 @@ class CarService {
       }
     };
 
-    print(jsonEncode(data));
     final response = await http.post(
         Uri.encodeFull(
             "https://ms-honda-sales-app.herokuapp.com/api/user/quote/set-quote-for-customer"),
@@ -57,7 +56,6 @@ class CarService {
 
     // If Login success
     if (response.statusCode == 200) {
-      print(jsonDecode(response.body));
       return true;
     }
     // Else Login Fails

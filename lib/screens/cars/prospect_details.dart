@@ -94,7 +94,7 @@ class _ProspectDetailsState extends State<ProspectDetails> {
                           fontFamily: kFontFamily,
                           fontSize: 2.5 * SizeConfig.textMultiplier,
                           decoration: TextDecoration.none,
-                          color: kBlackColor,
+                          color: kPrimaryColor,
                         ),
                       ),
                       SizedBox(
@@ -166,7 +166,7 @@ class _ProspectDetailsState extends State<ProspectDetails> {
                         onPressed: () async {
                           _addProspectDetails();
                         },
-                        buttonColor: Colors.black,
+                        buttonColor: Colors.grey,
                       ),
                     ],
                   ),

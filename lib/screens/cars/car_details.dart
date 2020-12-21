@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:ms_honda_sales/models/prospect.dart';
-import 'package:ms_honda_sales/screens/cars/get_quote_pdf.dart';
 import 'package:ms_honda_sales/screens/cars/prospect_details.dart';
 import 'package:ms_honda_sales/services/sharedPrefs.dart';
 import 'package:printing/printing.dart';
@@ -15,7 +14,6 @@ import 'package:ms_honda_sales/services/cars.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:toast/toast.dart';
 
 class CarDetails extends StatelessWidget {
   @override
@@ -41,20 +39,27 @@ class CarDetails extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.baseline,
                   children: [
-                    Text(
-                      carDetails[0],
-                      style: AppTheme.carDetailsHeaderParamsText,
-                      overflow: TextOverflow.ellipsis,
+                    Flexible(
+                      flex: 1,
+                      child: Text(
+                        carDetails[0],
+                        style: AppTheme.carDetailsHeaderParamsText,
+                      ),
                     ),
-                    Text(
-                      carDetails[1],
-                      style: AppTheme.carDetailsHeaderParamsText,
-                      overflow: TextOverflow.ellipsis,
+                    Flexible(
+                      flex: 1,
+                      child: Text(
+                        carDetails[1],
+                        style: AppTheme.carDetailsHeaderParamsText,
+                      ),
                     ),
-                    Text(
-                      carDetails[2],
-                      style: AppTheme.carDetailsHeaderParamsText,
-                      overflow: TextOverflow.ellipsis,
+                    Flexible(
+                      flex: 1,
+                      child: Text(
+                        carDetails[2],
+                        style: AppTheme.carDetailsHeaderParamsText,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                   ],
                 ),
@@ -84,11 +89,6 @@ class CarAccesseries extends StatelessWidget {
     var userDetails =
         Provider.of<ProspectDataProvider>(context).getProspectData;
 
-    print(isAddOnsIncluded);
-
-    // Define Data map
-    var dataMap = Map();
-
     // Feature Names
     final List<String> featureNames = <String>[
       'Ex Show Room',
@@ -105,8 +105,8 @@ class CarAccesseries extends StatelessWidget {
       'Hydrostatic Lock Cover And Key Cost',
       'Return To Invoice',
       'Price To Connected Device',
-      'Total On Road Price With Optional Add-Ons',
       'One Year Subscription Of Connected Devices',
+      'Total On Road Price With Optional Add-Ons',
     ];
 
     // Feature Values
@@ -140,29 +140,6 @@ class CarAccesseries extends StatelessWidget {
           .add(int.parse(data["oneYearSubscriptionOfConnectedDevices"]));
       featureValues.add(int.parse(data["totalOnRoadPriceWithOptionalAddOns"]));
 
-      // Data Map
-      dataMap = {
-        "Ex Show Room": data["exShowRoom"],
-        "Tax Collected At Source": data["taxCollectedAtSource"],
-        "Insurance For 1 Year": data["insuranceFor1Year"],
-        "Insurance Differents Amount For 2 Years":
-            data["insuranceDifferentsAmountFor2Years"],
-        "Road Tax And Registration Charges":
-            data["roadTaxAndRegistrationCharges"],
-        "Fastag": data["fastag"],
-        "Basic Accessories Kit": data["basicAccessoriesKit"],
-        "Extended Warranty": data["extendedWarranty"],
-        "Road Side Assistance": data["roadSideAssistance"],
-        "Zero Dep Policy": data["zeroDepPolicy"],
-        "Hydrostatic Lock Cover And Key Cost":
-            data["hydrostaticLockCoverAndKeyCost"],
-        "Return To Invoice": data["exShowRoom"],
-        "Price To Connected Device": data["returnToInvoice"],
-        "One Year Subscription Of Connected Devices":
-            data["oneYearSubscriptionOfConnectedDevices"],
-        "Total On Road Price With Optional Add-Ons":
-            data["totalOnRoadPriceWithOptionalAddOns"],
-      };
       return data;
     }
 
@@ -236,6 +213,16 @@ class CarAccesseries extends StatelessWidget {
                           context, addOnNames, addOnValues),
                     )
                   : pw.Container(),
+              pw.Container(
+                decoration: pw.BoxDecoration(
+                  border: pw.BoxBorder(
+                    top: true,
+                    color: PdfColors.black,
+                  ),
+                ),
+                child: _contentFinalCarDetails(
+                    context, featureNames, featureValues),
+              ),
               pw.Container(
                 margin: const pw.EdgeInsets.all(15.0),
                 padding: const pw.EdgeInsets.all(3.0),
@@ -331,7 +318,7 @@ class CarAccesseries extends StatelessWidget {
                     },
                   ),
                   RaisedButton(
-                    color: Colors.green,
+                    color: Colors.grey,
                     padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                     textColor: Colors.white,
                     onPressed: () async {
@@ -481,13 +468,15 @@ pw.Widget _contentMainCarDetails(
       // These will be your columns as Parameter X, Parameter Y etc.
       <String>[
         'Parameter',
+        '-',
         'Price',
       ],
-      for (int i = 0; i < featureNames.length; i++)
+      for (int i = 0; i < featureNames.length - 1; i++)
         <String>[
           // ith element will go in ith column means
           // featureNames[i] in 1st column
           featureNames[i],
+          'Rs',
           // featureValues[i] in 2nd column
           featureValues[i].toString(),
         ],
@@ -503,6 +492,7 @@ pw.Widget _contentAddOnCarDetails(
       // These will be your columns as Parameter X, Parameter Y etc.
       <String>[
         'Add On',
+        '-',
         'Cost',
       ],
       for (int i = 0; i < featureNames.length; i++)
@@ -510,6 +500,31 @@ pw.Widget _contentAddOnCarDetails(
           // ith element will go in ith column means
           // featureNames[i] in 1st column
           featureNames[i],
+          'Rs',
+          // featureValues[i] in 2nd column
+          featureValues[i].toString(),
+        ],
+    ],
+  );
+}
+
+pw.Widget _contentFinalCarDetails(
+    pw.Context context, List<String> featureNames, List<int> featureValues) {
+  return pw.Table.fromTextArray(
+    context: context,
+    data: <List<String>>[
+      // These will be your columns as Parameter X, Parameter Y etc.
+      <String>[
+        'Total',
+        '-',
+        'Price',
+      ],
+      for (int i = featureNames.length - 1; i < featureNames.length; i++)
+        <String>[
+          // ith element will go in ith column means
+          // featureNames[i] in 1st column
+          featureNames[i],
+          'Rs',
           // featureValues[i] in 2nd column
           featureValues[i].toString(),
         ],
