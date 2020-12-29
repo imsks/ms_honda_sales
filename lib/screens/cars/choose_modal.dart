@@ -99,6 +99,7 @@ class _CarDetailDropdownsState extends State<CarDetailDropdowns> {
   }
 
   bool checkedValue = false;
+  List<bool> addOnStatus = List<bool>.generate(9999, (int index) => false);
 
   @override
   Widget build(BuildContext context) {
@@ -112,14 +113,14 @@ class _CarDetailDropdownsState extends State<CarDetailDropdowns> {
           .setAddOnName(widget.addOnNames);
       Provider.of<CarDetailsProvider>(context, listen: false)
           .setAddOnValue(widget.addOnValues);
-      Provider.of<CarDetailsProvider>(context, listen: false)
-          .setAddOnIncludedStatus(checkedValue);
 
       Navigator.push(
         context,
         PageTransition(
           type: PageTransitionType.rightToLeft,
-          child: CarDetails(),
+          child: CarDetails(
+            addOnStatus: addOnStatus,
+          ),
         ),
       );
     }
@@ -202,61 +203,70 @@ class _CarDetailDropdownsState extends State<CarDetailDropdowns> {
           SizedBox(
             height: 2 * SizeConfig.heightMultiplier,
           ),
+          // widget.addOnNames.length > 0
+          //     ? CheckboxListTile(
+          //         title: Text("Include Add-ons"),
+          //         value: checkedValue,
+          //         onChanged: (newValue) {
+          //           setState(() {
+          //             checkedValue = newValue;
+          //           });
+          //         },
+          //         controlAffinity:
+          //             ListTileControlAffinity.leading, //  <-- leading Checkbox
+          //       )
+          //     : Center(
+          //         child: Container(
+          //           child: Text("No add-ons available"),
+          //         ),
+          //       ),
           widget.addOnNames.length > 0
-              ? CheckboxListTile(
-                  title: Text("Include Add-ons"),
-                  value: checkedValue,
-                  onChanged: (newValue) {
-                    setState(() {
-                      checkedValue = newValue;
-                    });
+              ? ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: widget.addOnNames.length,
+                  itemBuilder: (BuildContext context, index) {
+                    return Container(
+                      margin: EdgeInsets.symmetric(
+                        // horizontal: 3 * SizeConfig.heightMultiplier,
+                        vertical: 1 * SizeConfig.heightMultiplier,
+                      ),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 1 * SizeConfig.heightMultiplier,
+                        vertical: 2 * SizeConfig.heightMultiplier,
+                      ),
+                      color: kPrimaryColor,
+                      child: CheckboxListTile(
+                        title: Text(
+                          widget.addOnNames[index] +
+                              " - " +
+                              widget.addOnValues[index],
+                          style: TextStyle(
+                            fontSize: 2.5 * SizeConfig.textMultiplier,
+                            color: kWhiteColor,
+                          ),
+                        ),
+                        value: addOnStatus[index],
+                        onChanged: (newValue) {
+                          setState(() {
+                            addOnStatus[index] = newValue;
+                          });
+                          if (newValue == true) {
+                            Provider.of<CarDetailsProvider>(context,
+                                    listen: false)
+                                .setAddOnIncludedStatus(true);
+                          }
+                        },
+                        controlAffinity: ListTileControlAffinity
+                            .leading, //  <-- leading Checkbox
+                      ),
+                    );
                   },
-                  controlAffinity:
-                      ListTileControlAffinity.leading, //  <-- leading Checkbox
                 )
               : Center(
-                child: Container(
-                  child: Text(
-                    "No add-ons available"
+                  child: Container(
+                    child: Text("No add-ons available"),
                   ),
                 ),
-              ),
-          ListView.builder(
-            shrinkWrap: true,
-            itemCount: widget.addOnNames.length,
-            itemBuilder: (BuildContext context, index) {
-              return Container(
-                margin: EdgeInsets.symmetric(
-                  // horizontal: 3 * SizeConfig.heightMultiplier,
-                  vertical: 1 * SizeConfig.heightMultiplier,
-                ),
-                padding: EdgeInsets.symmetric(
-                  horizontal: 3 * SizeConfig.heightMultiplier,
-                  vertical: 2 * SizeConfig.heightMultiplier,
-                ),
-                color: kPrimaryColor,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      widget.addOnNames[index],
-                      style: TextStyle(
-                        fontSize: 2.5 * SizeConfig.textMultiplier,
-                        color: kWhiteColor
-                      ),
-                    ),
-                    Text(
-                      widget.addOnValues[index],
-                      style: TextStyle(
-                        fontSize: 2.5 * SizeConfig.textMultiplier,
-                        color: kWhiteColor
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
           SizedBox(
             height: 3 * SizeConfig.heightMultiplier,
           ),

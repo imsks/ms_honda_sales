@@ -13,6 +13,7 @@ class Wrapper extends StatelessWidget {
     SharedPref sharedPref = SharedPref();
     Future loadSharedPrefs() async {
       try {
+        // await sharedPref.remove("user");
         var data = await sharedPref.read("user");
         if (data != null) {
           return true;

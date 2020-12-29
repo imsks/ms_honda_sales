@@ -150,7 +150,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   ),
                   Center(
                     child: Button(
-                      buttonTitle: isSubmitClicked ? "Sign up" : "Signing up",
+                      buttonTitle: !isSubmitClicked ? "Sign up" : "Signing up",
                       buttonColor: Colors.grey,
                       buttonTextColor: Colors.white,
                       buttonTextSize: 3.2 * SizeConfig.heightMultiplier,

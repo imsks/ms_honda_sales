@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:ms_honda_sales/models/prospect.dart';
+import 'package:ms_honda_sales/screens/cars/get_quote_pdf.dart';
 import 'package:ms_honda_sales/screens/cars/prospect_details.dart';
 import 'package:ms_honda_sales/services/sharedPrefs.dart';
 import 'package:printing/printing.dart';
@@ -16,6 +17,9 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
 class CarDetails extends StatelessWidget {
+  final List<bool> addOnStatus;
+
+  const CarDetails({Key key, this.addOnStatus}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     var carDetails = Provider.of<CarDetailsProvider>(context).getCarDetails;
@@ -64,7 +68,9 @@ class CarDetails extends StatelessWidget {
                   ],
                 ),
               ),
-              CarAccesseries(),
+              CarAccesseries(
+                addOnStatus: addOnStatus,
+              ),
             ],
           ),
         ),
@@ -74,6 +80,9 @@ class CarDetails extends StatelessWidget {
 }
 
 class CarAccesseries extends StatelessWidget {
+  final List<bool> addOnStatus;
+
+  const CarAccesseries({Key key, this.addOnStatus}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     // Get Data from DB
@@ -97,16 +106,7 @@ class CarAccesseries extends StatelessWidget {
       'Insurance Differents Amount For 2 Years',
       'Road Tax And Registration Charges',
       'Fastag',
-      'Basic Accessories Kit',
-      'Extended Warranty',
-      'Road Side Assistance',
-      'On Road Price',
-      'Zero Dep Policy',
-      'Hydrostatic Lock Cover And Key Cost',
-      'Return To Invoice',
-      'Price To Connected Device',
-      'One Year Subscription Of Connected Devices',
-      'Total On Road Price With Optional Add-Ons',
+      'Discount',
     ];
 
     // Feature Values
@@ -128,23 +128,24 @@ class CarAccesseries extends StatelessWidget {
       featureValues.add(int.parse(data["insuranceDifferentsAmountFor2Years"]));
       featureValues.add(int.parse(data["roadTaxAndRegistrationCharges"]));
       featureValues.add(int.parse(data["Fastag"]));
-      featureValues.add(int.parse(data["basicAccessoriesKit"]));
-      featureValues.add(int.parse(data["extendedWarranty"]));
-      featureValues.add(int.parse(data["roadSideAssistance"]));
-      featureValues.add(int.parse(data["onRoadPrice"]));
-      featureValues.add(int.parse(data["zeroDepPolicy"]));
-      featureValues.add(int.parse(data["hydrostaticLockCoverAndKeyCost"]));
-      featureValues.add(int.parse(data["returnToInvoice"]));
-      featureValues.add(int.parse(data["priceToConnectedDevice"]));
-      featureValues
-          .add(int.parse(data["oneYearSubscriptionOfConnectedDevices"]));
-      featureValues.add(int.parse(data["totalOnRoadPriceWithOptionalAddOns"]));
+      featureValues.add(int.parse(data["discount"]));
 
       return data;
     }
 
     // Generate Dynamic PDF
     _generatePdfAndView(context) async {
+      int totalPrice =
+          featureValues.reduce((value, element) => value + element);
+
+      int count = 0;
+      addOnStatus.forEach((element) {
+        if (element) {
+          totalPrice = totalPrice + int.parse(addOnValues[count]);
+        }
+        count = count + 1;
+      });
+
       // Get User Details
       SharedPref sharedPref = SharedPref();
       var data = await sharedPref.read("user");
@@ -210,7 +211,11 @@ class CarAccesseries extends StatelessWidget {
                         ),
                       ),
                       child: _contentAddOnCarDetails(
-                          context, addOnNames, addOnValues),
+                        context,
+                        addOnStatus,
+                        addOnNames,
+                        addOnValues,
+                      ),
                     )
                   : pw.Container(),
               pw.Container(
@@ -221,7 +226,7 @@ class CarAccesseries extends StatelessWidget {
                   ),
                 ),
                 child: _contentFinalCarDetails(
-                    context, featureNames, featureValues),
+                    context, featureNames, featureValues, totalPrice),
               ),
               pw.Container(
                 margin: const pw.EdgeInsets.all(15.0),
@@ -264,8 +269,10 @@ class CarAccesseries extends StatelessWidget {
 
       await Printing.sharePdf(bytes: pdf.save(), filename: fileName);
       CarService carService = new CarService();
+
       var isQuoteAdded = await carService.sendQuote(
           data["userName"], userDetails, carDetails, isAddOnsIncluded);
+      ;
       if (isQuoteAdded) {
         Navigator.of(context).push(
           MaterialPageRoute(
@@ -484,8 +491,19 @@ pw.Widget _contentMainCarDetails(
   );
 }
 
-pw.Widget _contentAddOnCarDetails(
-    pw.Context context, List<String> featureNames, List<String> featureValues) {
+pw.Widget _contentAddOnCarDetails(pw.Context context, List<bool> addOnStatus,
+    List<String> featureNames, List<String> featureValues) {
+  List<String> newFeatureNames = [];
+  List<String> newFeatureValues = [];
+  int count = 0;
+  addOnStatus.forEach((element) {
+    if (element) {
+      newFeatureNames.add(featureNames[count]);
+      newFeatureValues.add(featureValues[count]);
+    }
+    count = count + 1;
+  });
+
   return pw.Table.fromTextArray(
     context: context,
     data: <List<String>>[
@@ -495,21 +513,31 @@ pw.Widget _contentAddOnCarDetails(
         '-',
         'Cost',
       ],
-      for (int i = 0; i < featureNames.length; i++)
+      for (int i = 0; i < newFeatureNames.length; i++)
         <String>[
           // ith element will go in ith column means
-          // featureNames[i] in 1st column
-          featureNames[i],
+          // newFeatureNames[i] in 1st column
+          newFeatureNames[i],
           'Rs',
           // featureValues[i] in 2nd column
-          featureValues[i].toString(),
+          newFeatureValues[i].toString(),
         ],
     ],
   );
 }
 
-pw.Widget _contentFinalCarDetails(
-    pw.Context context, List<String> featureNames, List<int> featureValues) {
+pw.Widget _contentFinalCarDetails(pw.Context context, List<String> featureNames,
+    List<int> featureValues, int totalPrice) {
+  List<String> finalNames = [
+    featureNames[featureNames.length - 1],
+    "Total on-road price"
+  ];
+
+  List<int> finalValues = [
+    featureValues[featureValues.length - 1],
+    totalPrice - featureValues[featureValues.length - 1]
+  ];
+
   return pw.Table.fromTextArray(
     context: context,
     data: <List<String>>[
@@ -519,14 +547,14 @@ pw.Widget _contentFinalCarDetails(
         '-',
         'Price',
       ],
-      for (int i = featureNames.length - 1; i < featureNames.length; i++)
+      for (int i = 0; i < finalNames.length; i++)
         <String>[
           // ith element will go in ith column means
           // featureNames[i] in 1st column
-          featureNames[i],
+          finalNames[i],
           'Rs',
           // featureValues[i] in 2nd column
-          featureValues[i].toString(),
+          finalValues[i].toString(),
         ],
     ],
   );

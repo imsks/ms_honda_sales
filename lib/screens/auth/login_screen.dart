@@ -152,7 +152,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   Center(
                     child: Button(
-                      buttonTitle: isSubmitClicked ? "Log in" : "Logging in",
+                      buttonTitle: !isSubmitClicked ? "Log in" : "Logging in",
                       buttonColor: Colors.grey,
                       buttonTextColor: Colors.white,
                       buttonTextSize: 3.2 * SizeConfig.heightMultiplier,
@@ -174,38 +174,38 @@ class _LoginScreenState extends State<LoginScreen> {
                   SizedBox(
                     height: 2.2 * SizeConfig.heightMultiplier,
                   ),
-                  Center(
-                    child: Text(
-                      "OR",
-                      style: TextStyle(
-                        fontSize: 2 * SizeConfig.heightMultiplier,
-                        color: Colors.grey,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 2.2 * SizeConfig.heightMultiplier,
-                  ),
-                  Center(
-                    child: Button(
-                      buttonTitle: "Sign up",
-                      buttonColor: Colors.grey,
-                      buttonTextColor: Colors.white,
-                      buttonTextSize: 3.2 * SizeConfig.heightMultiplier,
-                      minimumWidth: 33 * SizeConfig.heightMultiplier,
-                      height: 6.9 * SizeConfig.heightMultiplier,
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          PageTransition(
-                            type: PageTransitionType.fade,
-                            child: SignupScreen(),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
+                  // Center(
+                  //   child: Text(
+                  //     "OR",
+                  //     style: TextStyle(
+                  //       fontSize: 2 * SizeConfig.heightMultiplier,
+                  //       color: Colors.grey,
+                  //       fontWeight: FontWeight.w500,
+                  //     ),
+                  //   ),
+                  // ),
+                  // SizedBox(
+                  //   height: 2.2 * SizeConfig.heightMultiplier,
+                  // ),
+                  // Center(
+                  //   child: Button(
+                  //     buttonTitle: "Sign up",
+                  //     buttonColor: Colors.grey,
+                  //     buttonTextColor: Colors.white,
+                  //     buttonTextSize: 3.2 * SizeConfig.heightMultiplier,
+                  //     minimumWidth: 33 * SizeConfig.heightMultiplier,
+                  //     height: 6.9 * SizeConfig.heightMultiplier,
+                  //     onPressed: () {
+                  //       Navigator.push(
+                  //         context,
+                  //         PageTransition(
+                  //           type: PageTransitionType.fade,
+                  //           child: SignupScreen(),
+                  //         ),
+                  //       );
+                  //     },
+                  //   ),
+                  // ),
                 ],
               ),
             ),
