@@ -121,14 +121,27 @@ class CarAccesseries extends StatelessWidget {
         return data;
       }
 
-      // Set the data getting from DB
-      featureValues.add(int.parse(data["exShowRoom"]));
-      featureValues.add(int.parse(data["taxCollectedAtSource"]));
-      featureValues.add(int.parse(data["insuranceFor1Year"]));
-      featureValues.add(int.parse(data["insuranceDifferentsAmountFor2Years"]));
-      featureValues.add(int.parse(data["roadTaxAndRegistrationCharges"]));
-      featureValues.add(int.parse(data["Fastag"]));
-      featureValues.add(int.parse(data["discount"]));
+      try {
+        // Set the data getting from DB
+        featureValues
+            .add(int.parse(data["exShowRoom"].toString().replaceAll(",", "")));
+        featureValues.add(int.parse(
+            data["taxCollectedAtSource"].toString().replaceAll(",", "")));
+        featureValues.add(int.parse(
+            data["insuranceFor1Year"].toString().replaceAll(",", "")));
+        featureValues.add(int.parse(data["insuranceDifferentsAmountFor2Years"]
+            .toString()
+            .replaceAll(",", "")));
+        featureValues.add(int.parse(data["roadTaxAndRegistrationCharges"]
+            .toString()
+            .replaceAll(",", "")));
+        featureValues
+            .add(int.parse(data["Fastag"].toString().replaceAll(",", "")));
+        featureValues
+            .add(int.parse(data["discount"].toString().replaceAll(",", "")));
+      } catch (e) {
+        print(e);
+      }
 
       return data;
     }
